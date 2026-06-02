@@ -1,0 +1,20 @@
+{
+	"name": "phoenixwp/gift",
+	"description": "Add a free gift product to WooCommerce orders (PhoenixWP extension).",
+	"type": "wordpress-plugin",
+	"license": "GPL-2.0-or-later",
+	"require": {
+		"php": ">=8.2"
+	},
+	"autoload": {
+		"psr-4": {
+			"PhoenixWP\\Gift\\": "src/"
+		},
+		"files": [
+			"src/functions.php"
+		]
+	},
+	"config": {
+		"sort-packages": true
+	}
+}
