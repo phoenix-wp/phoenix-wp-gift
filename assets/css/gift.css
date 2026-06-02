@@ -1,0 +1,16 @@
+.phoenix-wp-gift-label {
+	display: inline-block;
+	margin-inline-start: 0.35em;
+	padding: 0.1em 0.45em;
+	font-size: 0.75em;
+	font-weight: 600;
+	line-height: 1.4;
+	vertical-align: middle;
+	border-radius: 3px;
+	background: #e8f5e9;
+	color: #2e7d32;
+}
+
+.phoenix-wp-gift-cart-item .phoenix-wp-gift-label {
+	white-space: nowrap;
+}

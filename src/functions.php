@@ -1,0 +1,72 @@
+<?php
+/**
+ * Global helper functions.
+ *
+ * @package PhoenixWP\Gift
+ */
+
+declare(strict_types=1);
+
+defined( 'ABSPATH' ) || exit;
+
+/**
+ * Whether PhoenixWP Core is active.
+ */
+function phoenix_wp_gift_is_core_active(): bool {
+	return defined( 'PHOENIX_WP_CORE_VERSION' ) || class_exists( \PhoenixWP\Core\Plugin::class );
+}
+
+/**
+ * Whether WooCommerce is active.
+ */
+function phoenix_wp_gift_is_woocommerce_active(): bool {
+	return class_exists( \WooCommerce::class );
+}
+
+/**
+ * Whether a Pro feature is active.
+ *
+ * @param string $feature Feature slug without plugin prefix.
+ */
+function phoenix_wp_gift_is_pro_active( string $feature ): bool {
+	$feature = 'gift_' . sanitize_key( $feature );
+
+	if ( function_exists( 'phoenix_wp_core_is_feature_active' ) ) {
+		return phoenix_wp_core_is_feature_active( $feature );
+	}
+
+	return false;
+}
+
+/**
+ * URL for Gift Pro upgrade (marketing landing).
+ */
+function phoenix_wp_gift_get_upgrade_url(): string {
+	/**
+	 * Filters the Gift Pro upgrade URL shown in admin.
+	 *
+	 * @param string $url Default phoenixwp.com product landing.
+	 */
+	return (string) apply_filters( 'phoenix_wp_gift_upgrade_url', 'https://phoenixwp.com/phoenix-wp-gift/' );
+}
+
+/**
+ * URL for public help documentation (phoenixwp.com).
+ */
+function phoenix_wp_gift_get_docs_url(): string {
+	/**
+	 * Filters the Gift documentation URL shown in admin.
+	 *
+	 * @param string $url Default phoenixwp.com docs (DE).
+	 */
+	return (string) apply_filters( 'phoenix_wp_gift_docs_url', 'https://phoenixwp.com/docs/phoenix-wp-gift/' );
+}
+
+/**
+ * Debug log via Core when available.
+ */
+function phoenix_wp_gift_log( string $message, string $level = 'info', array $context = array() ): void {
+	if ( function_exists( 'phoenix_wp_core_log' ) ) {
+		phoenix_wp_core_log( '[Gift] ' . $message, $level, $context );
+	}
+}
