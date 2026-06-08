@@ -1,0 +1,86 @@
+.phoenix-wp-gift-rules-table {
+	margin-top: 1em;
+	margin-bottom: 1.5em;
+}
+
+.phoenix-wp-gift-rule-actions a {
+	white-space: nowrap;
+}
+
+.phoenix-wp-gift-rule-form {
+	margin-top: 1.5em;
+	max-width: 720px;
+}
+
+.phoenix-wp-gift-selection-mode {
+	margin: 0 0 1em;
+}
+
+.phoenix-wp-gift-options {
+	display: flex;
+	flex-direction: column;
+	gap: 0.65em;
+	margin-top: 0.75em;
+}
+
+.phoenix-wp-gift-option-row {
+	display: flex;
+	flex-wrap: wrap;
+	align-items: center;
+	gap: 0.5em;
+}
+
+.phoenix-wp-gift-option-row .phoenix-wp-gift-option-product,
+.phoenix-wp-gift-option-row .phoenix-wp-gift-option-variation {
+	min-width: 220px;
+}
+
+.phoenix-wp-gift-weekdays {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.5em 1em;
+	margin-top: 0.35em;
+}
+
+.phoenix-wp-gift-weekday {
+	white-space: nowrap;
+}
+
+.phoenix-wp-gift-user-role {
+	display: inline-block;
+	margin-right: 0.75em;
+	white-space: nowrap;
+}
+
+.phoenix-wp-gift-role-filters {
+	margin-top: 0.75em;
+}
+
+.phoenix-wp-gift-term-list {
+	display: flex;
+	flex-wrap: wrap;
+	gap: 0.35em 1em;
+	max-height: 10em;
+	overflow-y: auto;
+	margin-top: 0.35em;
+	padding: 0.5em;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.phoenix-wp-gift-term-option {
+	white-space: nowrap;
+}
+
+.phoenix-wp-gift-term-select {
+	min-width: 20em;
+	max-width: 100%;
+}
+
+.phoenix-wp-gift-advanced {
+	margin-top: 0.25em;
+}
+
+.phoenix-wp-gift-advanced summary {
+	cursor: pointer;
+}

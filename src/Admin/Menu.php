@@ -20,6 +20,7 @@ namespace PhoenixWP\Gift\Admin;
 
 
 
+use PhoenixWP\Gift\Rules\Rules_Repository;
 use PhoenixWP\Gift\Settings;
 
 
@@ -177,19 +178,54 @@ final class Menu {
 
 
 		wp_enqueue_script(
-
 			'phoenix-wp-gift-admin',
-
 			PHOENIX_WP_GIFT_URL . 'assets/js/admin-settings.js',
-
 			array(),
-
 			PHOENIX_WP_GIFT_VERSION,
-
 			true
-
 		);
 
+		wp_enqueue_script(
+			'phoenix-wp-gift-admin-rules',
+			PHOENIX_WP_GIFT_URL . 'assets/js/admin-rules.js',
+			array(),
+			PHOENIX_WP_GIFT_VERSION,
+			true
+		);
+
+		wp_localize_script(
+			'phoenix-wp-gift-admin-rules',
+			'phoenixWpGiftRules',
+			array(
+				'ajaxUrl'          => admin_url( 'admin-ajax.php' ),
+				'variationsNonce'  => wp_create_nonce( 'phoenix_wp_gift_rules' ),
+			)
+		);
+
+		if ( phoenix_wp_gift_is_pro_active( 'import_export' ) ) {
+			wp_enqueue_script(
+				'phoenix-wp-gift-admin-tools',
+				PHOENIX_WP_GIFT_URL . 'assets/js/admin-tools.js',
+				array(),
+				PHOENIX_WP_GIFT_VERSION,
+				true
+			);
+
+			wp_localize_script(
+				'phoenix-wp-gift-admin-tools',
+				'phoenixWpGiftTools',
+				array(
+					'replaceConfirm' => __( 'Replace all existing gift rules with the imported file? This cannot be undone.', 'phoenix-wp-gift' ),
+				)
+			);
+		}
+
+		wp_enqueue_style(
+			'phoenix-wp-gift-admin',
+			PHOENIX_WP_GIFT_URL . 'assets/css/admin.css',
+			array(),
+			PHOENIX_WP_GIFT_VERSION
+		);
 	}
 
 
@@ -216,16 +252,72 @@ final class Menu {
 
 		echo '<h1>' . esc_html__( 'PhoenixWP Gift Product', 'phoenix-wp-gift' ) . '</h1>';
 
-		echo '<p>' . esc_html__( 'Free tier: one gift product per order with one condition (minimum subtotal or minimum item quantity).', 'phoenix-wp-gift' ) . '</p>';
-
 		printf(
 			'<p><a class="button button-secondary" href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p>',
 			esc_url( phoenix_wp_gift_get_docs_url() ),
 			esc_html__( 'Documentation & FAQ', 'phoenix-wp-gift' )
 		);
 
+		if ( $this->should_show_free_settings_form() ) {
+			echo '<p>' . esc_html__( 'Free tier: one gift product per order with one condition (minimum subtotal or minimum item quantity).', 'phoenix-wp-gift' ) . '</p>';
+			$this->render_free_settings_form( $settings, $trigger_type, $option_key );
+		} else {
+			echo '<p class="description">';
+			echo esc_html__(
+				'Gift Pro is active. Configure gifts in the Pro rules section below — the free settings form is hidden to avoid duplicate rules.',
+				'phoenix-wp-gift'
+			);
+			echo '</p>';
+		}
 
+		if ( phoenix_wp_gift_is_pro_active( 'multiple_rules' ) ) {
+			\PhoenixWP\Gift\Admin\Rules_Admin::render_section();
+		}
 
+		if ( phoenix_wp_gift_is_pro_active( 'import_export' ) ) {
+			\PhoenixWP\Gift\Admin\Tools_Admin::render_section();
+		}
+
+		if ( phoenix_wp_gift_is_pro_active( 'stats' ) ) {
+			\PhoenixWP\Gift\Admin\Stats_Admin::render_section();
+		}
+
+		echo '<hr /><h2>' . esc_html__( 'Pro', 'phoenix-wp-gift' ) . '</h2>';
+
+		if ( phoenix_wp_gift_is_pro_active( 'multiple_rules' ) ) {
+			echo '<p class="description">';
+			echo esc_html__( 'Gift Pro license is active on this site.', 'phoenix-wp-gift' );
+			echo '</p>';
+		} else {
+			$upgrade_url = phoenix_wp_gift_get_upgrade_url();
+
+			echo '<p>' . esc_html__( 'Multiple rules, categories, roles, scheduling, and more.', 'phoenix-wp-gift' ) . '</p>';
+
+			printf(
+				'<p><a class="button button-secondary" href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p>',
+				esc_url( $upgrade_url ),
+				esc_html__( 'Upgrade to Gift Pro', 'phoenix-wp-gift' )
+			);
+		}
+
+		echo '</div>';
+
+	}
+
+	private function should_show_free_settings_form(): bool {
+		if ( ! phoenix_wp_gift_is_pro_active( 'multiple_rules' ) ) {
+			return true;
+		}
+
+		return ! Rules_Repository::instance()->has_stored_rules();
+	}
+
+	/**
+	 * @param array<string, mixed> $settings     Plugin settings.
+	 * @param string               $trigger_type Active trigger type.
+	 * @param string               $option_key   Option key.
+	 */
+	private function render_free_settings_form( array $settings, string $trigger_type, string $option_key ): void {
 		echo '<form method="post" action="options.php">';
 
 		settings_fields( self::SETTINGS_GROUP );
@@ -370,45 +462,11 @@ final class Menu {
 		submit_button();
 
 		echo '</form>';
-
-
-
-		if ( ! phoenix_wp_gift_is_pro_active( 'advanced_rules' ) ) {
-
-			$upgrade_url = phoenix_wp_gift_get_upgrade_url();
-
-
-
-			echo '<hr /><h2>' . esc_html__( 'Pro', 'phoenix-wp-gift' ) . '</h2>';
-
-			echo '<p>' . esc_html__( 'Multiple rules, categories, roles, scheduling, and more.', 'phoenix-wp-gift' ) . '</p>';
-
-			printf(
-
-				'<p><a class="button button-secondary" href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p>',
-
-				esc_url( $upgrade_url ),
-
-				esc_html__( 'Upgrade to Gift Pro', 'phoenix-wp-gift' )
-
-			);
-
-		}
-
-
-
-		echo '</div>';
-
 	}
 
-
-
 	/**
-
 	 * Renders WooCommerce product dropdown.
-
 	 */
-
 	private function render_product_select( int $selected_id ): void {
 
 		$products = wc_get_products(

@@ -14,9 +14,19 @@
 		return;
 	}
 
-	const giftProductId = parseInt( window.phoenixWpGift.giftProductId, 10 );
+	const giftProductIds = Array.isArray( window.phoenixWpGift.giftProductIds )
+		? window.phoenixWpGift.giftProductIds.map( function ( id ) {
+				return parseInt( id, 10 );
+		  } )
+		: [];
 
-	if ( ! giftProductId ) {
+	const legacyGiftProductId = parseInt( window.phoenixWpGift.giftProductId, 10 );
+
+	if ( legacyGiftProductId && ! giftProductIds.includes( legacyGiftProductId ) ) {
+		giftProductIds.push( legacyGiftProductId );
+	}
+
+	if ( ! giftProductIds.length ) {
 		return;
 	}
 
@@ -26,7 +36,7 @@
 		cartItemClass( defaultValue, extensions, args ) {
 			const itemId = parseInt( args?.cartItem?.id, 10 );
 
-			if ( itemId !== giftProductId ) {
+			if ( ! giftProductIds.includes( itemId ) ) {
 				return defaultValue;
 			}
 

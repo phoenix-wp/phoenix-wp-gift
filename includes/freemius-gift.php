@@ -1,0 +1,75 @@
+<?php
+/**
+ * Freemius SDK bootstrap for PhoenixWP Gift Product.
+ *
+ * @package PhoenixWP\Gift
+ */
+
+defined( 'ABSPATH' ) || exit;
+
+if ( ! function_exists( 'phoenix_wp_gift_fs' ) ) {
+	/**
+	 * Freemius SDK instance for Gift (product 31421).
+	 *
+	 * @return \Freemius
+	 */
+	function phoenix_wp_gift_fs() {
+		global $phoenix_wp_gift_fs;
+
+		if ( ! isset( $phoenix_wp_gift_fs ) ) {
+			if ( ! defined( 'WP_FS__PRODUCT_31421_MULTISITE' ) ) {
+				define( 'WP_FS__PRODUCT_31421_MULTISITE', true );
+			}
+
+			require_once PHOENIX_WP_GIFT_PATH . 'includes/freemius/start.php';
+
+			$parent_slug = ( defined( 'PHOENIX_WP_CORE_VERSION' ) || class_exists( \PhoenixWP\Core\Plugin::class, false ) )
+				? 'phoenix-wp-core'
+				: 'phoenix-wp-gift';
+
+			$init = array(
+				'id'                  => '31421',
+				'slug'                => 'phoenix-wp-gift',
+				'type'                => 'plugin',
+				'public_key'          => 'pk_9aad59dcbbfc8507b58947ba8d61a',
+				'is_premium'          => true,
+				'premium_suffix'      => 'Pro',
+				'has_premium_version' => false,
+				'has_addons'          => false,
+				'has_paid_plans'      => true,
+				'has_free_plan'       => true,
+				'trial'               => array(
+					'days'               => 0,
+					'is_require_payment' => false,
+				),
+				'menu'                => array(
+					'slug'       => 'phoenix-wp-gift',
+					// Must be a path relative to wp-admin (admin.php?page=…), not the slug alone.
+					'first-path' => 'admin.php?page=phoenix-wp-gift',
+					'account'    => true,
+					'contact'    => false,
+					'support'    => false,
+					'parent'     => array(
+						'slug' => $parent_slug,
+					),
+				),
+				'is_live'             => true,
+			);
+
+			if ( defined( 'PHOENIX_WP_GIFT_FS_SECRET_KEY' ) && PHOENIX_WP_GIFT_FS_SECRET_KEY !== '' ) {
+				$init['secret_key'] = PHOENIX_WP_GIFT_FS_SECRET_KEY;
+			}
+
+			$phoenix_wp_gift_fs = fs_dynamic_init( $init );
+		}
+
+		return $phoenix_wp_gift_fs;
+	}
+
+	phoenix_wp_gift_fs();
+
+	/**
+	 * Fires after Freemius SDK is loaded for Gift.
+	 */
+	do_action( 'phoenix_wp_gift_fs_loaded' );
+}

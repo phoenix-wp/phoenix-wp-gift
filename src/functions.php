@@ -17,6 +17,25 @@ function phoenix_wp_gift_is_core_active(): bool {
 }
 
 /**
+ * Whether Pro stored rules (not free settings) drive the storefront.
+ */
+function phoenix_wp_gift_uses_pro_rules(): bool {
+	return phoenix_wp_gift_is_pro_active( 'multiple_rules' )
+		&& \PhoenixWP\Gift\Rules\Rules_Repository::instance()->has_stored_rules();
+}
+
+/**
+ * Whether any gift rule or free settings are configured for the storefront.
+ */
+function phoenix_wp_gift_has_active_configuration(): bool {
+	if ( phoenix_wp_gift_uses_pro_rules() ) {
+		return count( \PhoenixWP\Gift\Rules\Rules_Repository::instance()->get_enabled_rules_sorted() ) > 0;
+	}
+
+	return \PhoenixWP\Gift\Settings::instance()->is_enabled() && \PhoenixWP\Gift\Settings::instance()->get_product_id() > 0;
+}
+
+/**
  * Whether WooCommerce is active.
  */
 function phoenix_wp_gift_is_woocommerce_active(): bool {
@@ -30,6 +49,10 @@ function phoenix_wp_gift_is_woocommerce_active(): bool {
  */
 function phoenix_wp_gift_is_pro_active( string $feature ): bool {
 	$feature = 'gift_' . sanitize_key( $feature );
+
+	if ( class_exists( \PhoenixWP\Gift\Freemius\License_Bridge::class ) && \PhoenixWP\Gift\Freemius\License_Bridge::is_pro_license_active() ) {
+		return true;
+	}
 
 	if ( function_exists( 'phoenix_wp_core_is_feature_active' ) ) {
 		return phoenix_wp_core_is_feature_active( $feature );

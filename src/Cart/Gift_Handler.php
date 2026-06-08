@@ -9,6 +9,14 @@ declare(strict_types=1);
 
 namespace PhoenixWP\Gift\Cart;
 
+use PhoenixWP\Gift\Rules\Condition_Evaluator;
+use PhoenixWP\Gift\Frontend\Gift_Choice;
+use PhoenixWP\Gift\Rules\Gift_Options_Helper;
+use PhoenixWP\Gift\Rules\Rule_Resolver;
+use PhoenixWP\Gift\Rules\Rules_Repository;
+use PhoenixWP\Gift\Rules\Audience_Evaluator;
+use PhoenixWP\Gift\Rules\Cart_Content_Evaluator;
+use PhoenixWP\Gift\Rules\Schedule_Evaluator;
 use PhoenixWP\Gift\Settings;
 
 defined( 'ABSPATH' ) || exit;
@@ -18,11 +26,16 @@ defined( 'ABSPATH' ) || exit;
  */
 final class Gift_Handler {
 
-	public const CART_FLAG = 'phoenix_wp_gift';
+	public const CART_FLAG    = 'phoenix_wp_gift';
+	public const CART_RULE_ID = 'phoenix_wp_gift_rule_id';
+
+	private const CHOICE_SESSION_PREFIX = 'phoenix_wp_gift_chosen_';
 
 	private static ?self $instance = null;
 
 	private bool $processing = false;
+
+	private bool $in_recalc = false;
 
 	public static function instance(): self {
 		if ( null === self::$instance ) {
@@ -41,9 +54,11 @@ final class Gift_Handler {
 	 */
 	public function init(): void {
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'enforce_gift_single_quantity' ), 15 );
-		add_action( 'woocommerce_before_calculate_totals', array( $this, 'sync_gift_in_cart' ), 20 );
-		add_action( 'woocommerce_before_calculate_totals', array( $this, 'reorder_gift_lines_to_end' ), 25 );
 		add_action( 'woocommerce_before_calculate_totals', array( $this, 'apply_gift_zero_pricing' ), 99999 );
+
+		add_action( 'woocommerce_before_calculate_totals', array( $this, 'sync_gifts_before_totals' ), 99998 );
+		add_action( 'woocommerce_after_calculate_totals', array( $this, 'sync_gifts_after_totals' ), 5 );
+		add_action( 'woocommerce_after_calculate_totals', array( $this, 'reorder_gift_lines_to_end' ), 15 );
 
 		add_action( 'woocommerce_cart_loaded_from_session', array( $this, 'on_cart_loaded_from_session' ), 20 );
 
@@ -78,64 +93,254 @@ final class Gift_Handler {
 	}
 
 	/**
-	 * Adds or removes gift line item based on settings and cart subtotal.
+	 * Removes outdated gifts early; additions still run after totals are final.
 	 */
-	public function sync_gift_in_cart( \WC_Cart $cart ): void {
-		if ( ! $this->should_run_cart_logic() ) {
+	public function sync_gifts_before_totals( \WC_Cart $cart ): void {
+		if ( $this->in_recalc || $this->processing ) {
 			return;
+		}
+
+		$this->sync_gift_in_cart( $cart, 'remove_only' );
+	}
+
+	/**
+	 * Syncs gifts after WooCommerce has calculated accurate line totals.
+	 */
+	public function sync_gifts_after_totals( \WC_Cart $cart ): void {
+		if ( $this->in_recalc ) {
+			return;
+		}
+
+		if ( ! $this->sync_gift_in_cart( $cart, 'both' ) ) {
+			return;
+		}
+
+		$this->in_recalc = true;
+		$cart->calculate_totals();
+		$this->in_recalc = false;
+	}
+
+	/**
+	 * Resolves applicable gift rules for the current cart (after upgrade groups).
+	 *
+	 * @param \WC_Cart|null $cart Cart instance.
+	 * @return array{
+	 *   matching: array<string, array<string, mixed>>,
+	 *   raw_matching: array<string, array<string, mixed>>,
+	 *   schedule_blocked: array<int, string>,
+	 *   audience_blocked: array<int, string>,
+	 *   cart_content_blocked: array<int, string>
+	 * }
+	 */
+	public function resolve_applicable_rules( ?\WC_Cart $cart = null ): array {
+		$cart = $cart ?? ( function_exists( 'WC' ) ? WC()->cart : null );
+
+		$empty = array(
+			'matching'               => array(),
+			'raw_matching'           => array(),
+			'schedule_blocked'       => array(),
+			'audience_blocked'       => array(),
+			'cart_content_blocked'   => array(),
+		);
+
+		if ( ! $cart instanceof \WC_Cart ) {
+			return $empty;
+		}
+
+		$repository         = Rules_Repository::instance();
+		$using_stored_rules = phoenix_wp_gift_uses_pro_rules();
+
+		if ( ! $using_stored_rules && ! Settings::instance()->is_enabled() ) {
+			return $empty;
+		}
+
+		$rules                = $repository->get_runtime_rules();
+		$raw_matching         = array();
+		$schedule_blocked     = array();
+		$audience_blocked     = array();
+		$cart_content_blocked = array();
+
+		foreach ( $rules as $rule ) {
+			if ( empty( $rule['enabled'] ) ) {
+				continue;
+			}
+
+			$rule_id = (string) ( $rule['id'] ?? '' );
+
+			if ( '' === $rule_id ) {
+				continue;
+			}
+
+			if ( ! Audience_Evaluator::rule_matches_audience( $rule ) ) {
+				$audience_blocked[] = $rule_id;
+				continue;
+			}
+
+			if ( ! Schedule_Evaluator::rule_matches_schedule( $rule ) ) {
+				$schedule_blocked[] = $rule_id;
+				continue;
+			}
+
+			if ( ! Gift_Options_Helper::rule_has_purchasable_option( $rule ) ) {
+				continue;
+			}
+
+			if ( ! Cart_Content_Evaluator::rule_matches_cart_content( $rule, $cart ) ) {
+				$cart_content_blocked[] = $rule_id;
+				continue;
+			}
+
+			if ( Condition_Evaluator::rule_matches_cart_trigger( $rule, $cart ) ) {
+				$raw_matching[ $rule_id ] = $rule;
+			}
+		}
+
+		return array(
+			'matching'               => Rule_Resolver::resolve_applicable_rules( $raw_matching ),
+			'raw_matching'           => $raw_matching,
+			'schedule_blocked'       => $schedule_blocked,
+			'audience_blocked'       => $audience_blocked,
+			'cart_content_blocked'   => $cart_content_blocked,
+		);
+	}
+
+	/**
+	 * Adds or removes gift line items based on active rules and cart conditions.
+	 *
+	 * @param string $phase `both`, `remove_only`, or `add_only`.
+	 * @return bool Whether the cart contents were modified.
+	 */
+	public function sync_gift_in_cart( \WC_Cart $cart, string $phase = 'both' ): bool {
+		if ( ! $this->should_run_cart_logic() ) {
+			return false;
 		}
 
 		if ( $this->processing ) {
-			return;
+			return false;
 		}
 
 		$this->processing = true;
+		$modified         = false;
 
-		$gift_id = Settings::instance()->get_product_id();
+		$using_stored_rules = phoenix_wp_gift_uses_pro_rules();
+		$resolved           = $this->resolve_applicable_rules( $cart );
 
-		if ( ! Settings::instance()->is_enabled() || $gift_id <= 0 ) {
-			$this->remove_gift_from_cart( $cart );
+		if ( ! $using_stored_rules && ! Settings::instance()->is_enabled() ) {
+			$modified = $this->remove_all_gifts_from_cart( $cart ) || $modified;
 			$this->processing = false;
-			return;
+
+			return $modified;
 		}
 
-		$product = wc_get_product( $gift_id );
+		$matching             = $resolved['matching'];
+		$raw_matching         = $resolved['raw_matching'];
+		$schedule_blocked     = $resolved['schedule_blocked'];
+		$audience_blocked     = $resolved['audience_blocked'];
+		$cart_content_blocked = $resolved['cart_content_blocked'];
 
-		if ( ! $product instanceof \WC_Product || ! $product->is_purchasable() ) {
-			$this->remove_gift_from_cart( $cart );
-			$this->processing = false;
-			return;
+		phoenix_wp_gift_log(
+			'Gift rule resolution.',
+			'info',
+			array(
+				'raw_rule_ids'          => array_keys( $raw_matching ),
+				'schedule_blocked_ids'  => $schedule_blocked,
+				'audience_blocked_ids'    => $audience_blocked,
+				'cart_content_blocked_ids' => $cart_content_blocked,
+				'applicable_rule_ids'   => array_keys( $matching ),
+				'suppressed_rule_ids' => array_keys( Rule_Resolver::get_suppressed_rules( $raw_matching, $matching ) ),
+				'loser_product_ids'   => Rule_Resolver::get_loser_product_ids( $raw_matching, $matching ),
+				'rule_groups'         => array_map(
+					static function ( array $rule ): array {
+						return array(
+							'combine_mode'  => Rule_Resolver::get_combine_mode( $rule ),
+							'upgrade_group' => Rule_Resolver::get_upgrade_group( $rule ),
+						);
+					},
+					$raw_matching
+				),
+			)
+		);
+
+		$this->prune_stale_customer_choices( $matching );
+
+		if ( 'add_only' !== $phase ) {
+			foreach ( $this->collect_gift_line_keys_to_remove( $cart, $matching, $raw_matching, $using_stored_rules ) as $key ) {
+				$cart->remove_cart_item( $key );
+				$modified = true;
+			}
+
+			foreach ( $matching as $rule_id => $rule ) {
+				if ( ! Gift_Options_Helper::requires_customer_choice( $rule ) ) {
+					continue;
+				}
+
+				if ( $this->customer_choice_is_fulfilled( $cart, $rule_id, $rule ) ) {
+					continue;
+				}
+
+				$before_count = count( $cart->get_cart() );
+				$this->remove_gifts_for_rule( $cart, $rule_id );
+				$this->clear_customer_choice( $rule_id );
+
+				if ( count( $cart->get_cart() ) < $before_count ) {
+					$modified = true;
+					Gift_Choice::clear_gift_added_notices();
+
+					phoenix_wp_gift_log(
+						'Removed unconfirmed customer-choice gift line.',
+						'info',
+						array( 'rule_id' => $rule_id )
+					);
+				}
+			}
 		}
 
-		if ( ! $this->cart_meets_minimum( $cart, $gift_id ) ) {
-			$this->remove_gift_from_cart( $cart );
+		if ( 'remove_only' === $phase ) {
 			$this->processing = false;
-			return;
+
+			return $modified;
 		}
 
-		$this->ensure_gift_line_flags( $cart, $gift_id );
+		foreach ( $matching as $rule_id => $rule ) {
+			if ( Gift_Options_Helper::requires_customer_choice( $rule ) ) {
+				continue;
+			}
 
-		if ( ! $this->cart_contains_gift( $cart, $gift_id ) ) {
-			$cart->add_to_cart(
-				$product->get_id(),
-				1,
-				0,
-				array(),
+			$option = Gift_Options_Helper::get_auto_option( $rule );
+
+			if ( null === $option || ! Gift_Options_Helper::option_is_purchasable( $option ) ) {
+				continue;
+			}
+
+			if ( $this->cart_contains_gift_for_rule( $cart, $rule_id, $rule ) ) {
+				$this->ensure_gift_line_flags_for_rule( $cart, $rule_id, $rule );
+				continue;
+			}
+
+			$this->add_gift_option_to_cart( $cart, $rule_id, $option );
+			$modified = true;
+
+			phoenix_wp_gift_log(
+				'Gift product added to cart.',
+				'info',
 				array(
-					self::CART_FLAG => true,
+					'product_id'   => absint( $option['product_id'] ?? 0 ),
+					'variation_id' => absint( $option['variation_id'] ?? 0 ),
+					'rule_id'      => $rule_id,
 				)
 			);
-			phoenix_wp_gift_log( 'Gift product added to cart.', 'info', array( 'product_id' => $gift_id ) );
 		}
 
 		$this->processing = false;
+
+		return $modified;
 	}
 
 	/**
 	 * Keeps gift line items at the bottom of cart and mini-cart listings.
 	 */
 	public function reorder_gift_lines_to_end( \WC_Cart $cart ): void {
-		if ( ! $this->should_run_cart_logic() || ! Settings::instance()->is_enabled() ) {
+		if ( ! $this->should_run_cart_logic() || ! $this->has_active_gift_configuration() ) {
 			return;
 		}
 
@@ -383,10 +588,8 @@ final class Gift_Handler {
 			return;
 		}
 
-		$gift_id = Settings::instance()->get_product_id();
-
-		if ( Settings::instance()->is_enabled() && $gift_id > 0 ) {
-			$this->ensure_gift_line_flags( WC()->cart, $gift_id );
+		if ( $this->has_active_gift_configuration() ) {
+			$this->ensure_all_gift_line_flags( WC()->cart );
 			$this->reorder_gift_lines_to_end( WC()->cart );
 		}
 
@@ -430,6 +633,10 @@ final class Gift_Handler {
 		}
 
 		$cart_item[ self::CART_FLAG ] = true;
+
+		if ( ! empty( $values[ self::CART_RULE_ID ] ) ) {
+			$cart_item[ self::CART_RULE_ID ] = sanitize_key( (string) $values[ self::CART_RULE_ID ] );
+		}
 		$this->zero_product_object( $cart_item['data'] ?? null );
 
 		return $cart_item;
@@ -456,7 +663,7 @@ final class Gift_Handler {
 	 * @return mixed
 	 */
 	public function filter_gift_product_price( mixed $price, \WC_Product $product ): mixed {
-		if ( ! $this->is_cart_display_context() || ! $this->is_configured_gift_product( $product ) ) {
+		if ( ! $this->is_cart_display_context() || ! $this->is_managed_gift_product( $product ) ) {
 			return $price;
 		}
 
@@ -553,7 +760,7 @@ final class Gift_Handler {
 			return $name;
 		}
 
-		return $name . $this->get_gift_label_markup();
+		return $name . $this->get_gift_label_markup( $cart_item );
 	}
 
 	/**
@@ -607,13 +814,36 @@ final class Gift_Handler {
 	}
 
 	/**
-	 * HTML badge for the configured gift label.
+	 * HTML badge for the gift label (per rule or global fallback).
+	 *
+	 * @param array<string, mixed> $cart_item Cart line.
 	 */
-	private function get_gift_label_markup(): string {
+	private function get_gift_label_markup( array $cart_item ): string {
 		return sprintf(
 			' <span class="phoenix-wp-gift-label">%s</span>',
-			esc_html( Settings::instance()->get_gift_label() )
+			esc_html( $this->get_gift_label_for_cart_item( $cart_item ) )
 		);
+	}
+
+	/**
+	 * @param array<string, mixed> $cart_item Cart line.
+	 */
+	private function get_gift_label_for_cart_item( array $cart_item ): string {
+		$rule_id = sanitize_key( (string) ( $cart_item[ self::CART_RULE_ID ] ?? '' ) );
+
+		if ( '' !== $rule_id && 'legacy_free' !== $rule_id ) {
+			$rule = Rules_Repository::instance()->get( $rule_id );
+
+			if ( is_array( $rule ) ) {
+				$label = trim( (string) ( $rule['gift_label'] ?? '' ) );
+
+				if ( '' !== $label ) {
+					return $label;
+				}
+			}
+		}
+
+		return Settings::instance()->get_gift_label();
 	}
 
 	public function set_order_line_item_zero( \WC_Order_Item_Product $item, string $cart_item_key, array $values, \WC_Order $order ): void {
@@ -628,6 +858,10 @@ final class Gift_Handler {
 		$item->set_subtotal_tax( 0 );
 		$item->set_total_tax( 0 );
 		$item->add_meta_data( self::CART_FLAG, '1', true );
+
+		if ( ! empty( $values[ self::CART_RULE_ID ] ) ) {
+			$item->add_meta_data( self::CART_RULE_ID, sanitize_key( (string) $values[ self::CART_RULE_ID ] ), true );
+		}
 	}
 
 	public function filter_order_line_subtotal( string $subtotal, \WC_Order_Item_Product $item, \WC_Order $order ): string {
@@ -641,12 +875,305 @@ final class Gift_Handler {
 	}
 
 	/**
-	 * Tags configured gift product rows (e.g. after session reload without flag).
+	 * Tags gift rows after session reload (legacy lines without rule metadata).
 	 */
-	private function ensure_gift_line_flags( \WC_Cart $cart, int $gift_id ): void {
+	private function ensure_all_gift_line_flags( \WC_Cart $cart ): void {
+		$managed_ids = Rules_Repository::instance()->get_managed_product_ids();
+
 		foreach ( $cart->cart_contents as $cart_item_key => $cart_item ) {
-			if ( $this->line_matches_gift_product( $cart_item, $gift_id ) ) {
-				$cart->cart_contents[ $cart_item_key ][ self::CART_FLAG ] = true;
+			if ( ! empty( $cart_item[ self::CART_FLAG ] ) ) {
+				continue;
+			}
+
+			foreach ( $managed_ids as $gift_id ) {
+				if ( $this->line_matches_gift_product( $cart_item, $gift_id ) ) {
+					$cart->cart_contents[ $cart_item_key ][ self::CART_FLAG ] = true;
+					break;
+				}
+			}
+		}
+	}
+
+	/**
+	 * Determines which plugin-managed gift lines should be removed after rule resolution.
+	 *
+	 * @param array<string, array<string, mixed>> $matching           Applicable rules.
+	 * @param array<string, array<string, mixed>> $raw_matching       All matching rules.
+	 * @param bool                                  $using_stored_rules Whether Pro rules drive the cart.
+	 * @return string[]
+	 */
+	private function collect_gift_line_keys_to_remove( \WC_Cart $cart, array $matching, array $raw_matching, bool $using_stored_rules ): array {
+		$keys_to_remove  = array();
+		$loser_products  = array_fill_keys( Rule_Resolver::get_loser_product_ids( $raw_matching, $matching ), true );
+		$orphan_products = array_fill_keys( $this->get_orphan_gift_product_ids( $matching, $using_stored_rules ), true );
+
+		foreach ( $cart->get_cart() as $key => $item ) {
+			if ( ! $this->is_plugin_gift_line( $item ) ) {
+				continue;
+			}
+
+			if ( $this->should_keep_gift_line( $item, $matching ) ) {
+				continue;
+			}
+
+			$keys_to_remove[] = $key;
+
+			phoenix_wp_gift_log(
+				'Gift line scheduled for removal.',
+				'info',
+				array(
+					'cart_item_key' => $key,
+					'rule_id'       => (string) ( $item[ self::CART_RULE_ID ] ?? '' ),
+					'product_id'    => $this->get_cart_line_product_id( $item ),
+					'loser_product' => isset( $loser_products[ $this->get_cart_line_product_id( $item ) ] ),
+					'orphan_product' => isset( $orphan_products[ $this->get_cart_line_product_id( $item ) ] ),
+				)
+			);
+		}
+
+		return array_values( array_unique( $keys_to_remove ) );
+	}
+
+	/**
+	 * Gift product IDs that may linger from legacy free settings while Pro rules are active.
+	 *
+	 * @param array<string, array<string, mixed>> $matching Applicable rules.
+	 * @return int[]
+	 */
+	private function get_orphan_gift_product_ids( array $matching, bool $using_stored_rules ): array {
+		if ( ! $using_stored_rules ) {
+			return array();
+		}
+
+		$applicable_products = array();
+
+		foreach ( $matching as $rule ) {
+			foreach ( Gift_Options_Helper::get_line_ids_for_rule( $rule ) as $line_id ) {
+				$applicable_products[ $line_id ] = true;
+			}
+		}
+
+		$free_product_id = Settings::instance()->get_product_id();
+
+		if ( $free_product_id > 0 && ! isset( $applicable_products[ $free_product_id ] ) ) {
+			return array( $free_product_id );
+		}
+
+		return array();
+	}
+
+	/**
+	 * Whether a cart line was added or managed by this plugin as a gift.
+	 *
+	 * @param array<string, mixed> $item Cart line.
+	 */
+	private function is_plugin_gift_line( array $item ): bool {
+		if ( ! empty( $item[ self::CART_FLAG ] ) || ! empty( $item[ self::CART_RULE_ID ] ) ) {
+			return true;
+		}
+
+		$line_product_id = $this->get_cart_line_product_id( $item );
+
+		if ( $line_product_id <= 0 ) {
+			return false;
+		}
+
+		foreach ( Rules_Repository::instance()->get_all() as $rule ) {
+			if ( Gift_Options_Helper::line_matches_rule( $item, $rule ) ) {
+				return true;
+			}
+		}
+
+		$free_product_id = Settings::instance()->get_product_id();
+
+		if ( $free_product_id > 0 && $line_product_id === $free_product_id && phoenix_wp_gift_is_pro_active( 'multiple_rules' ) ) {
+			return true;
+		}
+
+		return $this->is_gift_cart_item( $item );
+	}
+
+	/**
+	 * @param array<string, mixed> $item Cart line.
+	 */
+	private function get_cart_line_product_id( array $item ): int {
+		return absint( $item['variation_id'] ?? 0 ) ?: absint( $item['product_id'] ?? 0 );
+	}
+
+	/**
+	 * @param array<string, mixed>              $item     Cart line.
+	 * @param array<string, array<string, mixed>> $matching Applicable rules.
+	 */
+	private function should_keep_gift_line( array $item, array $matching ): bool {
+		$rule_id = (string) ( $item[ self::CART_RULE_ID ] ?? '' );
+
+		if ( '' !== $rule_id ) {
+			if ( ! isset( $matching[ $rule_id ] ) ) {
+				return false;
+			}
+
+			$rule = $matching[ $rule_id ];
+
+			if ( Gift_Options_Helper::requires_customer_choice( $rule ) ) {
+				if ( ! function_exists( 'WC' ) || ! WC()->cart instanceof \WC_Cart ) {
+					return false;
+				}
+
+				if ( ! $this->customer_choice_is_fulfilled( WC()->cart, $rule_id, $rule ) ) {
+					return false;
+				}
+
+				$chosen_option = $this->get_remembered_choice_option( $rule_id, $rule );
+
+				return null !== $chosen_option && Gift_Options_Helper::line_matches_option( $item, $chosen_option );
+			}
+
+			return Gift_Options_Helper::line_matches_rule( $item, $rule );
+		}
+
+		foreach ( $matching as $rule ) {
+			if ( Gift_Options_Helper::requires_customer_choice( $rule ) ) {
+				continue;
+			}
+
+			if ( Gift_Options_Helper::line_matches_rule( $item, $rule ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param string               $rule_id Rule identifier.
+	 * @param array<string, mixed> $rule    Rule payload.
+	 */
+	private function ensure_gift_line_flags_for_rule( \WC_Cart $cart, string $rule_id, array $rule ): void {
+		foreach ( $cart->cart_contents as $cart_item_key => $cart_item ) {
+			if ( ! Gift_Options_Helper::line_matches_rule( $cart_item, $rule ) ) {
+				continue;
+			}
+
+			$cart->cart_contents[ $cart_item_key ][ self::CART_FLAG ]    = true;
+			$cart->cart_contents[ $cart_item_key ][ self::CART_RULE_ID ] = $rule_id;
+		}
+	}
+
+	/**
+	 * Adds a configured gift option to the cart with plugin flags.
+	 *
+	 * @param array{product_id: int, variation_id: int} $option Gift option.
+	 */
+	public function add_gift_option_to_cart( \WC_Cart $cart, string $rule_id, array $option ): void {
+		$args = Gift_Options_Helper::get_add_to_cart_args( $option );
+		$args['cart_item_data'][ self::CART_FLAG ]    = true;
+		$args['cart_item_data'][ self::CART_RULE_ID ] = sanitize_key( $rule_id );
+
+		$cart->add_to_cart(
+			$args['product_id'],
+			$args['quantity'],
+			$args['variation_id'],
+			$args['variation'],
+			$args['cart_item_data']
+		);
+	}
+
+	/**
+	 * Removes gift lines tied to a single rule.
+	 */
+	public function remove_gifts_for_rule( \WC_Cart $cart, string $rule_id ): void {
+		foreach ( $cart->get_cart() as $key => $item ) {
+			if ( (string) ( $item[ self::CART_RULE_ID ] ?? '' ) !== $rule_id ) {
+				continue;
+			}
+
+			$cart->remove_cart_item( $key );
+		}
+	}
+
+	public function remember_customer_choice( string $rule_id, string $option_key ): void {
+		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+			return;
+		}
+
+		WC()->session->set( self::CHOICE_SESSION_PREFIX . sanitize_key( $rule_id ), sanitize_text_field( $option_key ) );
+	}
+
+	public function get_remembered_customer_choice( string $rule_id ): string {
+		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+			return '';
+		}
+
+		return sanitize_text_field( (string) WC()->session->get( self::CHOICE_SESSION_PREFIX . sanitize_key( $rule_id ), '' ) );
+	}
+
+	public function clear_customer_choice( string $rule_id ): void {
+		if ( ! function_exists( 'WC' ) || ! WC()->session ) {
+			return;
+		}
+
+		WC()->session->__unset( self::CHOICE_SESSION_PREFIX . sanitize_key( $rule_id ) );
+	}
+
+	/**
+	 * @param array<string, mixed> $rule Rule payload.
+	 * @return array{product_id: int, variation_id: int}|null
+	 */
+	public function get_remembered_choice_option( string $rule_id, array $rule ): ?array {
+		$option_key = $this->get_remembered_customer_choice( $rule_id );
+
+		if ( '' === $option_key ) {
+			return null;
+		}
+
+		foreach ( Gift_Options_Helper::get_options( $rule ) as $option ) {
+			if ( Gift_Options_Helper::option_key( $option ) === $option_key ) {
+				return $option;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * @param array<string, mixed> $rule Rule payload.
+	 */
+	public function customer_choice_is_fulfilled( \WC_Cart $cart, string $rule_id, array $rule ): bool {
+		$option = $this->get_remembered_choice_option( $rule_id, $rule );
+
+		if ( null === $option ) {
+			return false;
+		}
+
+		foreach ( $cart->get_cart() as $item ) {
+			if ( (string) ( $item[ self::CART_RULE_ID ] ?? '' ) !== $rule_id ) {
+				continue;
+			}
+
+			if ( empty( $item[ self::CART_FLAG ] ) ) {
+				continue;
+			}
+
+			if ( Gift_Options_Helper::line_matches_option( $item, $option ) ) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+	/**
+	 * @param array<string, array<string, mixed>> $matching Applicable rules.
+	 */
+	private function prune_stale_customer_choices( array $matching ): void {
+		foreach ( Rules_Repository::instance()->get_all() as $rule_id => $rule ) {
+			if ( ! Gift_Options_Helper::requires_customer_choice( $rule ) ) {
+				continue;
+			}
+
+			if ( ! isset( $matching[ $rule_id ] ) ) {
+				$this->clear_customer_choice( (string) $rule_id );
+				Gift_Choice::clear_gift_added_notices();
 			}
 		}
 	}
@@ -659,11 +1186,17 @@ final class Gift_Handler {
 			return true;
 		}
 
-		if ( ! Settings::instance()->is_enabled() ) {
+		if ( ! $this->has_active_gift_configuration() ) {
 			return false;
 		}
 
-		return $this->line_matches_gift_product( $cart_item, Settings::instance()->get_product_id() );
+		foreach ( Rules_Repository::instance()->get_managed_product_ids() as $gift_id ) {
+			if ( $this->line_matches_gift_product( $cart_item, $gift_id ) ) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	/**
@@ -679,19 +1212,19 @@ final class Gift_Handler {
 		return $line_id === $gift_id || (int) $cart_item['product_id'] === $gift_id;
 	}
 
-	private function is_configured_gift_product( \WC_Product $product ): bool {
-		return Settings::instance()->get_product_id() === $product->get_id();
+	private function is_managed_gift_product( \WC_Product $product ): bool {
+		return in_array( $product->get_id(), Rules_Repository::instance()->get_managed_product_ids(), true );
 	}
 
 	/**
 	 * Whether quantity controls should be locked for a gift product in the cart.
 	 */
 	private function should_lock_gift_product_quantity( \WC_Product $product ): bool {
-		if ( ! Settings::instance()->is_enabled() ) {
+		if ( ! $this->has_active_gift_configuration() ) {
 			return false;
 		}
 
-		if ( ! $this->is_configured_gift_product( $product ) ) {
+		if ( ! $this->is_managed_gift_product( $product ) ) {
 			return false;
 		}
 
@@ -754,83 +1287,19 @@ final class Gift_Handler {
 		return did_action( 'woocommerce_before_calculate_totals' ) > 0;
 	}
 
-	private function cart_meets_minimum( \WC_Cart $cart, int $gift_id ): bool {
-		if ( Settings::instance()->uses_item_quantity_trigger() ) {
-			return $this->cart_meets_item_quantity( $cart, $gift_id );
+	public function cart_contains_gift_for_rule( \WC_Cart $cart, string $rule_id, array $rule ): bool {
+		if ( Gift_Options_Helper::requires_customer_choice( $rule ) ) {
+			return $this->customer_choice_is_fulfilled( $cart, $rule_id, $rule );
 		}
-
-		return $this->cart_meets_subtotal( $cart, $gift_id );
-	}
-
-	private function cart_meets_subtotal( \WC_Cart $cart, int $gift_id ): bool {
-		$minimum = Settings::instance()->get_min_subtotal();
-
-		if ( $minimum <= 0 ) {
-			return ! $this->cart_is_empty_except_gift( $cart, $gift_id );
-		}
-
-		return $this->get_subtotal_excluding_gift( $cart, $gift_id ) >= $minimum;
-	}
-
-	private function cart_meets_item_quantity( \WC_Cart $cart, int $gift_id ): bool {
-		$minimum = Settings::instance()->get_min_item_quantity();
-		$count   = $this->get_item_quantity_excluding_gift( $cart, $gift_id );
-
-		if ( $minimum <= 0 ) {
-			return $count > 0;
-		}
-
-		return $count >= $minimum;
-	}
-
-	private function get_item_quantity_excluding_gift( \WC_Cart $cart, int $gift_id ): int {
-		$total = 0;
 
 		foreach ( $cart->get_cart() as $item ) {
-			if ( $this->is_gift_cart_item( $item ) || $this->line_matches_gift_product( $item, $gift_id ) ) {
+			if ( ! Gift_Options_Helper::line_matches_rule( $item, $rule ) ) {
 				continue;
 			}
 
-			$total += max( 0, (int) ( $item['quantity'] ?? 0 ) );
-		}
+			$item_rule_id = (string) ( $item[ self::CART_RULE_ID ] ?? '' );
 
-		return $total;
-	}
-
-	private function get_subtotal_excluding_gift( \WC_Cart $cart, int $gift_id ): float {
-		$total = 0.0;
-
-		foreach ( $cart->get_cart() as $item ) {
-			if ( $this->is_gift_cart_item( $item ) ) {
-				continue;
-			}
-
-			if ( $this->line_matches_gift_product( $item, $gift_id ) ) {
-				continue;
-			}
-
-			// Gross (brutto): line subtotal including line tax — Free tier uses gross thresholds only.
-			$total += (float) $item['line_subtotal'] + (float) ( $item['line_subtotal_tax'] ?? 0 );
-		}
-
-		return $total;
-	}
-
-	private function cart_is_empty_except_gift( \WC_Cart $cart, int $gift_id ): bool {
-		foreach ( $cart->get_cart() as $item ) {
-			if ( $this->is_gift_cart_item( $item ) || $this->line_matches_gift_product( $item, $gift_id ) ) {
-				continue;
-			}
-
-			return false;
-		}
-
-		return true;
-	}
-
-	private function cart_contains_gift( \WC_Cart $cart, int $gift_id ): bool {
-		foreach ( $cart->get_cart() as $item ) {
-			if ( $this->is_gift_cart_item( $item ) || $this->line_matches_gift_product( $item, $gift_id ) ) {
+			if ( $item_rule_id === $rule_id || ( '' === $item_rule_id && $this->is_gift_cart_item( $item ) ) ) {
 				return true;
 			}
 		}
@@ -838,13 +1307,24 @@ final class Gift_Handler {
 		return false;
 	}
 
-	private function remove_gift_from_cart( \WC_Cart $cart ): void {
-		$gift_id = Settings::instance()->get_product_id();
+	private function remove_all_gifts_from_cart( \WC_Cart $cart ): bool {
+		$modified = false;
 
 		foreach ( $cart->get_cart() as $key => $item ) {
-			if ( $this->is_gift_cart_item( $item ) || $this->line_matches_gift_product( $item, $gift_id ) ) {
+			if ( $this->is_gift_cart_item( $item ) ) {
 				$cart->remove_cart_item( $key );
+				$modified = true;
 			}
 		}
+
+		return $modified;
+	}
+
+	private function has_active_gift_configuration(): bool {
+		if ( phoenix_wp_gift_uses_pro_rules() ) {
+			return true;
+		}
+
+		return Settings::instance()->is_enabled() && Settings::instance()->get_product_id() > 0;
 	}
 }

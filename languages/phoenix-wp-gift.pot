@@ -1,0 +1,782 @@
+# Copyright (C) 2026 PhoenixWP
+# This file is distributed under the GPL-2.0-or-later.
+msgid ""
+msgstr ""
+"Project-Id-Version: PhoenixWP Gift Product 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/phoenix-wp-gift\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-07T16:10:27+00:00\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"X-Generator: WP-CLI 2.12.0\n"
+"X-Domain: phoenix-wp-gift\n"
+
+#. Plugin Name of the plugin
+#: phoenix-wp-gift.php
+#: src/Admin/Menu.php:253
+#: src/Plugin.php:115
+msgid "PhoenixWP Gift Product"
+msgstr ""
+
+#. Plugin URI of the plugin
+#. Author URI of the plugin
+#: phoenix-wp-gift.php
+msgid "https://phoenixwp.com"
+msgstr ""
+
+#. Description of the plugin
+#: phoenix-wp-gift.php
+msgid "Add a free gift product to WooCommerce carts (Free tier). PhoenixWP extension."
+msgstr ""
+
+#. Author of the plugin
+#: phoenix-wp-gift.php
+msgid "PhoenixWP"
+msgstr ""
+
+#: src/Admin/Menu.php:100
+#: src/Admin/Menu.php:102
+msgid "PhoenixWP Gift"
+msgstr ""
+
+#: src/Admin/Menu.php:126
+#: src/Admin/Menu.php:128
+msgid "Gift Product"
+msgstr ""
+
+#: src/Admin/Menu.php:218
+msgid "Replace all existing gift rules with the imported file? This cannot be undone."
+msgstr ""
+
+#: src/Admin/Menu.php:258
+msgid "Documentation & FAQ"
+msgstr ""
+
+#: src/Admin/Menu.php:262
+msgid "Free tier: one gift product per order with one condition (minimum subtotal or minimum item quantity)."
+msgstr ""
+
+#: src/Admin/Menu.php:266
+msgid "Gift Pro is active. Configure gifts in the Pro rules section below — the free settings form is hidden to avoid duplicate rules."
+msgstr ""
+
+#: src/Admin/Menu.php:285
+msgid "Pro"
+msgstr ""
+
+#: src/Admin/Menu.php:289
+msgid "Gift Pro license is active on this site."
+msgstr ""
+
+#: src/Admin/Menu.php:294
+msgid "Multiple rules, categories, roles, scheduling, and more."
+msgstr ""
+
+#: src/Admin/Menu.php:299
+msgid "Upgrade to Gift Pro"
+msgstr ""
+
+#: src/Admin/Menu.php:331
+msgid "Enable gift"
+msgstr ""
+
+#: src/Admin/Menu.php:341
+msgid "Automatically add the gift product to the cart when conditions are met."
+msgstr ""
+
+#: src/Admin/Menu.php:349
+#: src/Admin/Rules_Admin.php:173
+#: src/Admin/Rules_Admin.php:408
+msgid "Gift product"
+msgstr ""
+
+#: src/Admin/Menu.php:357
+#: src/Admin/Rules_Admin.php:174
+#: src/Admin/Rules_Admin.php:309
+msgid "Condition"
+msgstr ""
+
+#: src/Admin/Menu.php:369
+#: src/Admin/Rules_Admin.php:314
+msgid "Minimum gross cart subtotal"
+msgstr ""
+
+#: src/Admin/Menu.php:383
+#: src/Admin/Rules_Admin.php:320
+msgid "Minimum number of items in cart"
+msgstr ""
+
+#: src/Admin/Menu.php:387
+msgid "Free tier: choose one trigger type."
+msgstr ""
+
+#: src/Admin/Menu.php:395
+#: src/Admin/Rules_Admin.php:325
+msgid "Minimum subtotal"
+msgstr ""
+
+#: src/Admin/Menu.php:407
+msgid "Gross cart subtotal (incl. tax). Leave 0 for no minimum (gift when cart has any other product)."
+msgstr ""
+
+#: src/Admin/Menu.php:415
+#: src/Admin/Rules_Admin.php:333
+msgid "Minimum item quantity"
+msgstr ""
+
+#: src/Admin/Menu.php:427
+msgid "Sum of quantities for all non-gift products. Leave 0 for any item in cart."
+msgstr ""
+
+#: src/Admin/Menu.php:433
+#: src/Admin/Rules_Admin.php:294
+msgid "Gift label"
+msgstr ""
+
+#: src/Admin/Menu.php:443
+#: src/Admin/Rules_Admin.php:298
+#: src/Settings.php:158
+msgid "Free gift"
+msgstr ""
+
+#: src/Admin/Menu.php:448
+msgid "Badge in the mini cart and classic (shortcode) checkout only. On the cart page and with Cart/Checkout blocks, use CSS class phoenix-wp-gift-cart-item — see Documentation & FAQ (phoenixwp.com)."
+msgstr ""
+
+#: src/Admin/Menu.php:494
+#: src/Admin/Rules_Admin.php:430
+msgid "— Select product —"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:48
+msgid "Removed the duplicate “Default gift rule” that mirrored the free settings. Use Pro rules below only."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:62
+msgid "Pro rules"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:64
+msgid "Create multiple gift rules. Rules in the same gift tier group compete (highest threshold wins). Different tier groups stack as separate gifts."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:70
+msgid "Progress hint (Pro): [phoenix_wp_gift_progress] — live cart progress. Customer gift choice (Pro): set “Customer chooses” below; picker appears on the classic cart/checkout or via [phoenix_wp_gift_choice] (recommended for Cart blocks)."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:88
+#: src/Admin/Rules_Admin.php:230
+#: src/Admin/Rules_Admin.php:281
+msgid "Add rule"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:113
+msgid "Multiple rules are set to Additional gift. For tiered gifts (50 € → A, 100 € → B), edit each rule and choose Upgrade in the same upgrade group."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:127
+msgid "Rule saved."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:128
+msgid "Rule deleted."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:129
+msgid "Rule duplicated."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:130
+msgid "Could not complete the action. Check rule name and gift product, then try again."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:131
+msgid "Rule not found. It may have been removed already."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:149
+msgid "No Pro rules yet. Add a rule or save the free settings above to migrate a default rule."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:171
+msgid "Name"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:172
+msgid "Status"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:175
+msgid "Audience"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:176
+#: src/Admin/Rules_Admin.php:810
+msgid "Schedule"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:177
+msgid "Combine"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:178
+msgid "Actions"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:189
+#: src/Admin/Rules_Admin.php:251
+msgid "Active"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:189
+msgid "Inactive"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:199
+msgid "Edit"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:205
+msgid "Duplicate"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:211
+msgid "Delete this rule?"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:212
+msgid "Delete"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:230
+msgid "Edit rule"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:244
+msgid "Rule name"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:255
+msgid "Enable this rule"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:268
+msgid "Advanced"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:270
+msgid "Tie-breaker priority (optional)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:273
+msgid "Priority"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:276
+msgid "Only used when two rules in the same tier group have the exact same threshold. Lower number wins. Leave at 10 in most shops."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:281
+msgid "Save rule"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:285
+msgid "Cancel"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:300
+msgid "Optional per rule. Leave empty to use the global gift label above."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:357
+msgid "Gift products"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:364
+msgid "Automatic — add the first gift option to the cart"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:370
+msgid "Customer chooses — shopper picks 1 of N on the cart page"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:383
+msgid "Add gift option"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:386
+msgid "Use simple products or specific variations. Variable products need a variation per option. Customer choice requires at least two options."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:410
+msgid "Variation"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:414
+msgid "Remove gift option"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:465
+msgid "— Select variation —"
+msgstr ""
+
+#. translators: %d: number of gift options
+#: src/Admin/Rules_Admin.php:498
+#, php-format
+msgid "Customer choice (%d options)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:506
+#: src/Admin/Rules_Admin.php:512
+msgid "Not set"
+msgstr ""
+
+#. translators: 1: gift name, 2: option count
+#: src/Admin/Rules_Admin.php:520
+#, php-format
+msgid "%1$s (+%2$d more)"
+msgstr ""
+
+#. translators: %s: gift tier group label
+#: src/Admin/Rules_Admin.php:573
+#, php-format
+msgid "Upgrade · %s"
+msgstr ""
+
+#. translators: %s: gift tier group label
+#: src/Admin/Rules_Admin.php:580
+#, php-format
+msgid "Additional · %s"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:591
+msgid "When this rule matches"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:596
+msgid "Additional gift — baseline gift; replaced when an Upgrade rule in the same group matches"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:602
+msgid "Upgrade — replace the best matching rule in the same upgrade group"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:604
+msgid "Example: Additional at 3 items + Upgrade at 100 € in group “default” — gift A until 100 €, then gift B. Parallel campaigns: use separate group names (e.g. bonus)."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:621
+msgid "Gift tier group"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:625
+msgid "default"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:639
+msgid "Same group = one gift wins (highest threshold). Different groups = gifts stack. Use “default” for standard tiers, or a short slug such as summer-sale or black-week."
+msgstr ""
+
+#. translators: %s: human-readable tier group label
+#: src/Admin/Rules_Admin.php:646
+#, php-format
+msgid "Admin label: %s."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:664
+msgid "Cart must contain"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:676
+msgid "Products (optional)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:702
+msgid "Categories (optional)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:729
+msgid "Tags (optional)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:748
+msgid "All selected filters must match (AND). Within each list, one matching cart line is enough. Leave empty for no extra cart content requirement."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:760
+msgid "Customers"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:767
+msgid "Everyone (guests and logged-in customers)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:773
+msgid "Logged-in customers only"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:779
+msgid "Guests only (not logged in)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:782
+msgid "Limit to roles (optional)"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:798
+msgid "Leave all roles unchecked to allow any logged-in customer. Role filters apply only when “Logged-in customers only” is selected."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:813
+msgid "Start date"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:820
+msgid "End date"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:827
+msgid "Weekdays"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:841
+msgid "Uses your WordPress site timezone. Leave dates empty for no date limit. Keep all weekdays checked for no weekday limit. Scheduled rules get their own tier group from the rule name so they stack with standard tiers. Set gift tier group to “default” only if this campaign should replace another tier gift."
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:856
+msgid "Monday"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:857
+msgid "Tuesday"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:858
+msgid "Wednesday"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:859
+msgid "Thursday"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:860
+msgid "Friday"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:861
+msgid "Saturday"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:862
+msgid "Sunday"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:871
+msgid "Always"
+msgstr ""
+
+#. translators: 1: start date, 2: end date
+#: src/Admin/Rules_Admin.php:881
+#, php-format
+msgid "%1$s – %2$s"
+msgstr ""
+
+#. translators: %s: start date
+#: src/Admin/Rules_Admin.php:888
+#, php-format
+msgid "From %s"
+msgstr ""
+
+#. translators: %s: end date
+#: src/Admin/Rules_Admin.php:894
+#, php-format
+msgid "Until %s"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:914
+msgid "No weekdays selected"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:941
+msgid "Any item in cart"
+msgstr ""
+
+#. translators: %d: minimum item count
+#: src/Admin/Rules_Admin.php:945
+#, php-format
+msgid "Min. %d items"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:953
+msgid "Any cart value"
+msgstr ""
+
+#. translators: %s: formatted money amount
+#: src/Admin/Rules_Admin.php:957
+#, php-format
+msgid "Min. %s gross"
+msgstr ""
+
+#: src/Admin/Rules_Admin.php:1050
+msgid "You do not have permission to manage gift rules."
+msgstr ""
+
+#: src/Admin/Stats_Admin.php:28
+msgid "Statistics"
+msgstr ""
+
+#: src/Admin/Stats_Admin.php:30
+msgid "Gift redemptions in paid orders. Counts per rule are available for new orders after this update; older orders may appear as legacy gifts."
+msgstr ""
+
+#: src/Admin/Stats_Admin.php:37
+msgid "No gift redemptions in the last 90 days."
+msgstr ""
+
+#: src/Admin/Stats_Admin.php:43
+msgid "Rule"
+msgstr ""
+
+#: src/Admin/Stats_Admin.php:44
+msgid "Last 30 days"
+msgstr ""
+
+#: src/Admin/Stats_Admin.php:45
+msgid "Last 90 days"
+msgstr ""
+
+#: src/Admin/Stats_Admin.php:57
+msgid "Total"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:37
+msgid "Import / Export"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:39
+msgid "Back up or migrate Pro gift rules as JSON. Product IDs refer to products on this site — remap products after importing on another shop."
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:52
+msgid "Export rules (JSON)"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:60
+msgid "Import file"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:64
+msgid "Import mode"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:69
+msgid "Merge — add imported rules; duplicate IDs get new IDs"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:74
+msgid "Replace — remove all existing rules and import the file"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:79
+msgid "Import rules"
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:91
+msgid "Rules imported successfully."
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:92
+msgid "Import failed. Upload a valid JSON export file and try again."
+msgstr ""
+
+#. translators: 1: imported count, 2: skipped count
+#: src/Admin/Tools_Admin.php:114
+#, php-format
+msgid "Imported %1$d rule(s). Skipped %2$d invalid row(s)."
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:135
+#: src/Admin/Tools_Admin.php:152
+msgid "Gift Pro import/export is not available on this site."
+msgstr ""
+
+#: src/Admin/Tools_Admin.php:200
+msgid "You do not have permission to manage gift tools."
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:397
+msgid "Choose your free gift:"
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:455
+msgid "Add gift to cart"
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:489
+#: src/Frontend/Gift_Choice.php:598
+#: src/Frontend/Gift_Choice.php:681
+msgid "Your free gift was added to the cart."
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:537
+msgid "Your cart is not available. Please reload the page and try again."
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:544
+#: src/Frontend/Gift_Choice.php:569
+#: src/Frontend/Gift_Choice.php:683
+msgid "Please choose a gift option."
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:553
+msgid "This gift is no longer available for your cart."
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:562
+msgid "This gift does not require a customer selection."
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:583
+msgid "The selected gift is not available."
+msgstr ""
+
+#: src/Frontend/Gift_Choice.php:682
+msgid "Could not add the gift. Please try again."
+msgstr ""
+
+#: src/Frontend/Gift_Choice_Rest.php:95
+msgid "Gift Pro is not available on this site."
+msgstr ""
+
+#: src/Frontend/Progress_Calculator.php:200
+msgid "your free gift"
+msgstr ""
+
+#. translators: 1: number of items still needed, 2: gift name
+#: src/Frontend/Progress_Calculator.php:215
+#, php-format
+msgid "Add %1$d more item to receive %2$s."
+msgid_plural "Add %1$d more items to receive %2$s."
+msgstr[0] ""
+msgstr[1] ""
+
+#. translators: 1: formatted money amount still needed, 2: gift name
+#: src/Frontend/Progress_Calculator.php:229
+#, php-format
+msgid "Add %1$s more to your cart to receive %2$s."
+msgstr ""
+
+#: src/Install.php:31
+msgid "PhoenixWP Gift requires WordPress 6.7+, PHP 8.2+, and WooCommerce."
+msgstr ""
+
+#: src/Install.php:32
+msgid "Plugin Activation Error"
+msgstr ""
+
+#: src/Plugin.php:210
+msgid "PhoenixWP Gift: PhoenixWP Core is not active. Registry and licensing integration are disabled."
+msgstr ""
+
+#: src/Plugin.php:219
+msgid "PhoenixWP Gift requires WooCommerce."
+msgstr ""
+
+#: src/Rules/Audience_Evaluator.php:132
+msgid "Guests only"
+msgstr ""
+
+#: src/Rules/Audience_Evaluator.php:136
+msgid "Everyone"
+msgstr ""
+
+#: src/Rules/Audience_Evaluator.php:140
+msgid "Logged-in customers"
+msgstr ""
+
+#. translators: %s: comma-separated role names
+#: src/Rules/Audience_Evaluator.php:151
+#, php-format
+msgid "Roles: %s"
+msgstr ""
+
+#. translators: %s: comma-separated product names
+#: src/Rules/Cart_Content_Evaluator.php:147
+#, php-format
+msgid "Product: %s"
+msgstr ""
+
+#: src/Rules/Cart_Content_Evaluator.php:153
+msgid "Category"
+msgstr ""
+
+#: src/Rules/Cart_Content_Evaluator.php:153
+msgid "Categories"
+msgstr ""
+
+#: src/Rules/Cart_Content_Evaluator.php:159
+msgid "Tag"
+msgstr ""
+
+#: src/Rules/Cart_Content_Evaluator.php:159
+msgid "Tags"
+msgstr ""
+
+#. translators: 1: Category or tag label, 2: comma-separated term names
+#: src/Rules/Cart_Content_Evaluator.php:199
+#, php-format
+msgid "%1$s: %2$s"
+msgstr ""
+
+#: src/Rules/Gift_Options_Helper.php:323
+msgid "Add at least one gift product option."
+msgstr ""
+
+#: src/Rules/Gift_Options_Helper.php:327
+msgid "Customer choice requires at least two gift options."
+msgstr ""
+
+#: src/Rules/Gift_Options_Helper.php:341
+msgid "Each gift option must be a purchasable simple product or a specific variation."
+msgstr ""
+
+#: src/Rules/Rules_Repository.php:330
+msgid "Default gift rule"
+msgstr ""
+
+#: src/Rules/Rules_Repository.php:399
+msgid "(copy)"
+msgstr ""
+
+#: src/Rules/Rules_Repository.php:457
+msgid "Gift rule"
+msgstr ""
+
+#: src/Rules/Upgrade_Group_Helper.php:28
+msgid "Standard tiers"
+msgstr ""
+
+#. translators: %s: rule name
+#: src/Rules/Upgrade_Group_Helper.php:37
+#, php-format
+msgid "Campaign: %s"
+msgstr ""
+
+#. translators: %s: rule name
+#: src/Rules/Upgrade_Group_Helper.php:49
+#, php-format
+msgid "Parallel: %s"
+msgstr ""
+
+#. translators: %s: product name
+#: src/Stats/Gift_Stats.php:133
+#, php-format
+msgid "Legacy gift (%s)"
+msgstr ""
+
+#: src/Stats/Gift_Stats.php:138
+msgid "Legacy gift (unknown product)"
+msgstr ""

@@ -11,7 +11,13 @@ namespace PhoenixWP\Gift;
 
 use PhoenixWP\Core\Module_Registry;
 use PhoenixWP\Gift\Admin\Menu;
+use PhoenixWP\Gift\Admin\Rules_Admin;
+use PhoenixWP\Gift\Admin\Tools_Admin;
 use PhoenixWP\Gift\Cart\Gift_Handler;
+use PhoenixWP\Gift\Frontend\Gift_Choice;
+use PhoenixWP\Gift\Frontend\Progress_Shortcode;
+use PhoenixWP\Gift\Rules\Rules_Repository;
+use PhoenixWP\Gift\Freemius\License_Bridge;
 
 defined( 'ABSPATH' ) || exit;
 
@@ -33,6 +39,13 @@ final class Plugin {
 	}
 
 	private function __construct() {
+		// Freemius boots in freemius-gift.php before Plugin::instance(); init immediately when SDK is ready.
+		if ( function_exists( 'phoenix_wp_gift_fs' ) ) {
+			License_Bridge::init();
+		} else {
+			add_action( 'phoenix_wp_gift_fs_loaded', array( License_Bridge::class, 'init' ) );
+		}
+
 		add_action( 'before_woocommerce_init', array( $this, 'declare_woocommerce_compatibility' ) );
 		add_action( 'phoenix_wp_core_register_modules', array( $this, 'register_module' ) );
 		add_action( 'plugins_loaded', array( $this, 'init' ), 20 );
@@ -74,11 +87,15 @@ final class Plugin {
 
 		if ( phoenix_wp_gift_is_woocommerce_active() ) {
 			Gift_Handler::instance()->init();
+			Progress_Shortcode::register_hooks();
+			Gift_Choice::register_hooks();
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_frontend_assets' ) );
 			add_action( 'wp_enqueue_scripts', array( $this, 'enqueue_blocks_class_assets' ), 20 );
 		}
 
 		if ( is_admin() ) {
+			Rules_Admin::register_hooks();
+			Tools_Admin::register_hooks();
 			Menu::instance()->init();
 		}
 
@@ -111,16 +128,27 @@ final class Plugin {
 	 * @return array<string, string>
 	 */
 	public function register_feature_tiers( array $map ): array {
-		$map['gift_advanced_rules'] = 'pro';
+		$gift_pro = array(
+			'gift_pro'             => 'pro',
+			'gift_multiple_rules'  => 'pro',
+			'gift_rule_conditions' => 'pro',
+			'gift_rule_schedule'   => 'pro',
+			'gift_tiered_gifts'    => 'pro',
+			'gift_progress_hint'   => 'pro',
+			'gift_import_export'   => 'pro',
+			'gift_stats'           => 'pro',
+			'gift_variations'      => 'pro',
+			'gift_customer_choice' => 'pro',
+		);
 
-		return $map;
+		return array_merge( $map, $gift_pro );
 	}
 
 	/**
 	 * Enqueues storefront styles when the gift is enabled.
 	 */
 	public function enqueue_frontend_assets(): void {
-		if ( ! Settings::instance()->is_enabled() || ! Settings::instance()->get_product_id() ) {
+		if ( ! phoenix_wp_gift_has_active_configuration() ) {
 			return;
 		}
 
@@ -136,7 +164,7 @@ final class Plugin {
 	 * Enqueues Cart/Checkout block script that applies phoenix-wp-gift-cart-item on gift lines.
 	 */
 	public function enqueue_blocks_class_assets(): void {
-		if ( ! Settings::instance()->is_enabled() || ! Settings::instance()->get_product_id() ) {
+		if ( ! phoenix_wp_gift_has_active_configuration() ) {
 			return;
 		}
 
@@ -166,7 +194,8 @@ final class Plugin {
 			'phoenix-wp-gift-blocks',
 			'phoenixWpGift',
 			array(
-				'giftProductId' => Settings::instance()->get_product_id(),
+				'giftProductId'  => Settings::instance()->get_product_id(),
+				'giftProductIds' => Rules_Repository::instance()->get_managed_product_ids(),
 			)
 		);
 	}
