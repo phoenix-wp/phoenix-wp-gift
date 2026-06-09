@@ -21,7 +21,7 @@
 |--------------|----------|
 | WordPress 6.7+ (tested 7.0) | ✅ |
 | PHP 8.2+ | ✅ |
-| WooCommerce | ✅ |
+| WooCommerce 8.0+ (tested 10.8.1) | ✅ |
 | phoenix-wp-core | Empfohlen (Registry, Lizenz-Tier) |
 
 Sibling-Repo zu `phoenix-wp-core` — **nicht** im Core-Ordner entwickeln.
