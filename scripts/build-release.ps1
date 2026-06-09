@@ -53,6 +53,12 @@ if (Test-Path $zipPath) {
 	Remove-Item -Force $zipPath
 }
 
-Compress-Archive -Path $stageDir -DestinationPath $zipPath -CompressionLevel Optimal
+# Freemius rejects PowerShell Compress-Archive ZIPs (backslash paths). Use tar.
+Push-Location $distDir
+try {
+	tar -a -c -f "$pluginSlug-$Version.zip" $pluginSlug
+} finally {
+	Pop-Location
+}
 
-Write-Host "Built $zipPath"
+Write-Host "Built $zipPath (tar — forward-slash paths for Freemius)"
