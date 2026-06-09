@@ -61,4 +61,4 @@ try {
 	Pop-Location
 }
 
-Write-Host "Built $zipPath (tar — forward-slash paths for Freemius)"
+Write-Host "Built $zipPath (tar, forward-slash paths for Freemius)"

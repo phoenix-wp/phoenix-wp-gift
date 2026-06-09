@@ -2,7 +2,7 @@
 Contributors: phoenixwp
 Tags: woocommerce, gift, free gift, cart, promotion
 Requires at least: 6.7
-Tested up to: 6.8
+Tested up to: 7.0
 Requires PHP: 8.2
 WC requires at least: 8.0
 WC tested up to: 9.8
@@ -70,7 +70,7 @@ Check that the rule is enabled, the gift product is purchasable, and the thresho
 == Changelog ==
 
 = 1.0.0 =
-* Launch release: free tier with one gift rule (subtotal or quantity threshold).
+* Launch release: free tier with one gift rule (subtotal or quantity threshold). Tested on WordPress 7.0.
 * HPOS and WooCommerce Cart/Checkout Blocks compatibility.
 * Gift badge in mini cart and classic checkout; CSS hook for cart and blocks.
 * Freemius licensing for Gift Pro (multiple rules, customer choice, progress, tools).

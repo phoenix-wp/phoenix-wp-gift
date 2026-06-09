@@ -19,7 +19,7 @@
 
 | Abhängigkeit | Pflicht? |
 |--------------|----------|
-| WordPress 6.7+ | ✅ |
+| WordPress 6.7+ (tested 7.0) | ✅ |
 | PHP 8.2+ | ✅ |
 | WooCommerce | ✅ |
 | phoenix-wp-core | Empfohlen (Registry, Lizenz-Tier) |

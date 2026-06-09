@@ -4,7 +4,7 @@ WooCommerce extension: automatically add a **free gift product** to the cart.
 
 ## Requirements
 
-- WordPress 6.7+, PHP 8.2+
+- WordPress 6.7+ (tested up to 7.0), PHP 8.2+
 - WooCommerce
 - PhoenixWP Core (recommended)
 
