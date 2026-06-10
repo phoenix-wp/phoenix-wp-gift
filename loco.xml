@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<bundle>
+	<domain name="phoenix-wp-gift">
+		<project name="PhoenixWP Gift Product">
+			<source>
+				<directory>.</directory>
+				<exclude>
+					<directory>includes/freemius</directory>
+					<directory>vendor</directory>
+					<directory>dist</directory>
+					<directory>node_modules</directory>
+				</exclude>
+			</source>
+			<target>
+				<directory>languages</directory>
+			</target>
+			<template>
+				<file>languages/phoenix-wp-gift.pot</file>
+			</template>
+		</project>
+	</domain>
+	<exclude>
+		<directory>includes/freemius</directory>
+		<directory>vendor</directory>
+		<directory>dist</directory>
+	</exclude>
+</bundle>
