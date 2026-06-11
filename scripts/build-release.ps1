@@ -28,8 +28,6 @@ if (Test-Path $distDir) {
 }
 New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
 
-$excludePattern = '(\\\.git\\|\\\.github\\|\\dist\\|\\scripts\\|composer\.lock$|composer\.phar$|wp-cli\.phar$|\.DS_Store$)'
-
 Get-ChildItem -Path $root -Force | Where-Object {
 	$name = $_.Name
 	$name -notin @('.git', '.github', 'dist', 'scripts', 'wp-org-assets', 'composer.lock', 'composer.phar', 'wp-cli.phar', '.DS_Store')
