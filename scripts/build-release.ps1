@@ -32,7 +32,7 @@ $excludePattern = '(\\\.git\\|\\\.github\\|\\dist\\|\\scripts\\|composer\.lock$|
 
 Get-ChildItem -Path $root -Force | Where-Object {
 	$name = $_.Name
-	$name -notin @('.git', '.github', 'dist', 'scripts', 'composer.lock', 'composer.phar', 'wp-cli.phar', '.DS_Store')
+	$name -notin @('.git', '.github', 'dist', 'scripts', 'wp-org-assets', 'composer.lock', 'composer.phar', 'wp-cli.phar', '.DS_Store')
 } | ForEach-Object {
 	Copy-Item -Path $_.FullName -Destination $stageDir -Recurse -Force
 }
