@@ -20,13 +20,16 @@ if ($Version -eq '') {
 }
 
 $distDir = Join-Path $root 'dist'
-$stageDir = Join-Path $distDir $pluginSlug
+$stageDir = Join-Path $env:TEMP $pluginSlug
 $zipPath = Join-Path $distDir "$pluginSlug-$Version.zip"
 
-if (Test-Path $distDir) {
-	Remove-Item -Recurse -Force $distDir
+if (Test-Path $stageDir) {
+	Remove-Item -Recurse -Force $stageDir -ErrorAction SilentlyContinue
 }
 New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
+if (-not (Test-Path $distDir)) {
+	New-Item -ItemType Directory -Path $distDir -Force | Out-Null
+}
 
 Get-ChildItem -Path $root -Force | Where-Object {
 	$name = $_.Name
@@ -48,15 +51,17 @@ foreach ($path in $freemiusDevPaths) {
 }
 
 if (Test-Path $zipPath) {
-	Remove-Item -Force $zipPath
+	Remove-Item -Force $zipPath -ErrorAction SilentlyContinue
 }
 
 # Freemius rejects PowerShell Compress-Archive ZIPs (backslash paths). Use tar.
-Push-Location $distDir
+Push-Location $env:TEMP
 try {
-	tar -a -c -f "$pluginSlug-$Version.zip" $pluginSlug
+	tar -a -c -f $zipPath $pluginSlug
 } finally {
 	Pop-Location
 }
+
+Remove-Item -Recurse -Force $stageDir -ErrorAction SilentlyContinue
 
 Write-Host "Built $zipPath (tar, forward-slash paths for Freemius)"
