@@ -10,7 +10,7 @@
 | Version | **1.0.0** (Launch; intern vorher 1.2.x–1.6.x auf Staging) |
 | Namespace | `PhoenixWP\Gift\` |
 | Type | Extension (Free + Pro via Freemius) |
-| Pro-Preis | 29 € / 29 $ / Jahr |
+| Pro-Preis | 19 € / 19 $ / Jahr |
 | Staging-Tests | `staging.vitalstoffversand.com` |
 
 ---
