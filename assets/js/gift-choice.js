@@ -24,7 +24,7 @@
 	}
 
 	function ensureRoot() {
-		let root = document.querySelector( '.phoenix-wp-gift-choice-root' );
+		let root = document.querySelector( '.phoenix-gift-for-woocommerce-choice-root' );
 
 		if ( root ) {
 			return root;
@@ -37,7 +37,7 @@
 		}
 
 		root = document.createElement( 'div' );
-		root.className = 'phoenix-wp-gift-choice-root phoenix-wp-gift-choice-root--empty';
+		root.className = 'phoenix-gift-for-woocommerce-choice-root phoenix-gift-for-woocommerce-choice-root--empty';
 		root.setAttribute( 'data-rule', '' );
 		anchor.parentNode.insertBefore( root, anchor );
 
@@ -57,7 +57,7 @@
 		const empty = ! html || ( data && data.empty );
 
 		root.innerHTML = html;
-		root.classList.toggle( 'phoenix-wp-gift-choice-root--empty', empty );
+		root.classList.toggle( 'phoenix-gift-for-woocommerce-choice-root--empty', empty );
 	}
 
 	function showNotice( message, type ) {
@@ -162,7 +162,7 @@
 			return;
 		}
 
-		const submitButton = form.querySelector( '.phoenix-wp-gift-choice__submit' );
+		const submitButton = form.querySelector( '.phoenix-gift-for-woocommerce-choice__submit' );
 
 		isSubmitting = true;
 
@@ -217,7 +217,7 @@
 		document.addEventListener(
 			'submit',
 			function ( event ) {
-				const form = event.target.closest( '.phoenix-wp-gift-choice__form' );
+				const form = event.target.closest( '.phoenix-gift-for-woocommerce-choice__form' );
 
 				if ( ! form ) {
 					return;

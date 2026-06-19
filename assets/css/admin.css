@@ -1,62 +1,62 @@
-.phoenix-wp-gift-rules-table {
+.phoenix-gift-for-woocommerce-rules-table {
 	margin-top: 1em;
 	margin-bottom: 1.5em;
 }
 
-.phoenix-wp-gift-rule-actions a {
+.phoenix-gift-for-woocommerce-rule-actions a {
 	white-space: nowrap;
 }
 
-.phoenix-wp-gift-rule-form {
+.phoenix-gift-for-woocommerce-rule-form {
 	margin-top: 1.5em;
 	max-width: 720px;
 }
 
-.phoenix-wp-gift-selection-mode {
+.phoenix-gift-for-woocommerce-selection-mode {
 	margin: 0 0 1em;
 }
 
-.phoenix-wp-gift-options {
+.phoenix-gift-for-woocommerce-options {
 	display: flex;
 	flex-direction: column;
 	gap: 0.65em;
 	margin-top: 0.75em;
 }
 
-.phoenix-wp-gift-option-row {
+.phoenix-gift-for-woocommerce-option-row {
 	display: flex;
 	flex-wrap: wrap;
 	align-items: center;
 	gap: 0.5em;
 }
 
-.phoenix-wp-gift-option-row .phoenix-wp-gift-option-product,
-.phoenix-wp-gift-option-row .phoenix-wp-gift-option-variation {
+.phoenix-gift-for-woocommerce-option-row .phoenix-gift-for-woocommerce-option-product,
+.phoenix-gift-for-woocommerce-option-row .phoenix-gift-for-woocommerce-option-variation {
 	min-width: 220px;
 }
 
-.phoenix-wp-gift-weekdays {
+.phoenix-gift-for-woocommerce-weekdays {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.5em 1em;
 	margin-top: 0.35em;
 }
 
-.phoenix-wp-gift-weekday {
+.phoenix-gift-for-woocommerce-weekday {
 	white-space: nowrap;
 }
 
-.phoenix-wp-gift-user-role {
+.phoenix-gift-for-woocommerce-user-role {
 	display: inline-block;
 	margin-right: 0.75em;
 	white-space: nowrap;
 }
 
-.phoenix-wp-gift-role-filters {
+.phoenix-gift-for-woocommerce-role-filters {
 	margin-top: 0.75em;
 }
 
-.phoenix-wp-gift-term-list {
+.phoenix-gift-for-woocommerce-term-list {
 	display: flex;
 	flex-wrap: wrap;
 	gap: 0.35em 1em;
@@ -68,19 +68,19 @@
 	background: #fff;
 }
 
-.phoenix-wp-gift-term-option {
+.phoenix-gift-for-woocommerce-term-option {
 	white-space: nowrap;
 }
 
-.phoenix-wp-gift-term-select {
+.phoenix-gift-for-woocommerce-term-select {
 	min-width: 20em;
 	max-width: 100%;
 }
 
-.phoenix-wp-gift-advanced {
+.phoenix-gift-for-woocommerce-advanced {
 	margin-top: 0.25em;
 }
 
-.phoenix-wp-gift-advanced summary {
+.phoenix-gift-for-woocommerce-advanced summary {
 	cursor: pointer;
 }

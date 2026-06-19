@@ -1,4 +1,4 @@
-.phoenix-wp-gift-label {
+.phoenix-gift-for-woocommerce-label {
 	display: inline-block;
 	margin-inline-start: 0.35em;
 	padding: 0.1em 0.45em;
@@ -11,15 +11,15 @@
 	color: #2e7d32;
 }
 
-.phoenix-wp-gift-cart-item .phoenix-wp-gift-label {
+.phoenix-gift-for-woocommerce-cart-item .phoenix-gift-for-woocommerce-label {
 	white-space: nowrap;
 }
 
-.phoenix-wp-gift-choice-root--empty {
+.phoenix-gift-for-woocommerce-choice-root--empty {
 	display: none;
 }
 
-.phoenix-wp-gift-choice {
+.phoenix-gift-for-woocommerce-choice {
 	margin: 1em 0 1.5em;
 	padding: 1em 1.1em;
 	border: 1px solid #c8e6c9;
@@ -28,33 +28,33 @@
 	color: #1b5e20;
 }
 
-.phoenix-wp-gift-choice__title,
-.phoenix-wp-gift-choice__text {
+.phoenix-gift-for-woocommerce-choice__title,
+.phoenix-gift-for-woocommerce-choice__text {
 	margin: 0 0 0.75em;
 }
 
-.phoenix-wp-gift-choice__options {
+.phoenix-gift-for-woocommerce-choice__options {
 	margin: 0 0 1em;
 	padding: 0;
 	list-style: none;
 }
 
-.phoenix-wp-gift-choice__options li + li {
+.phoenix-gift-for-woocommerce-choice__options li + li {
 	margin-top: 0.45em;
 }
 
-.phoenix-wp-gift-choice__options label {
+.phoenix-gift-for-woocommerce-choice__options label {
 	display: inline-flex;
 	align-items: center;
 	gap: 0.45em;
 	cursor: pointer;
 }
 
-.phoenix-wp-gift-progress-root--empty {
+.phoenix-gift-for-woocommerce-progress-root--empty {
 	display: none;
 }
 
-.phoenix-wp-gift-progress {
+.phoenix-gift-for-woocommerce-progress {
 	margin: 1em 0;
 	padding: 0.85em 1em;
 	border: 1px solid #c8e6c9;
@@ -63,20 +63,20 @@
 	color: #1b5e20;
 }
 
-.phoenix-wp-gift-progress__text {
+.phoenix-gift-for-woocommerce-progress__text {
 	margin: 0 0 0.65em;
 	font-size: 0.95em;
 	line-height: 1.45;
 }
 
-.phoenix-wp-gift-progress__bar {
+.phoenix-gift-for-woocommerce-progress__bar {
 	overflow: hidden;
 	height: 0.45em;
 	border-radius: 999px;
 	background: #dcefdc;
 }
 
-.phoenix-wp-gift-progress__bar-fill {
+.phoenix-gift-for-woocommerce-progress__bar-fill {
 	display: block;
 	height: 100%;
 	border-radius: inherit;

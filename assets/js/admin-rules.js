@@ -5,10 +5,10 @@
 
 	function toggleRuleTriggerRows() {
 		var subtotalRadio = document.querySelector(
-			'input.phoenix-wp-gift-rule-trigger[value="subtotal"]'
+			'input.phoenix-gift-for-woocommerce-rule-trigger[value="subtotal"]'
 		);
-		var subtotalRow = document.querySelector( '.phoenix-wp-gift-rule-trigger-subtotal' );
-		var quantityRow = document.querySelector( '.phoenix-wp-gift-rule-trigger-quantity' );
+		var subtotalRow = document.querySelector( '.phoenix-gift-for-woocommerce-rule-trigger-subtotal' );
+		var quantityRow = document.querySelector( '.phoenix-gift-for-woocommerce-rule-trigger-quantity' );
 
 		if ( ! subtotalRadio || ! subtotalRow || ! quantityRow ) {
 			return;
@@ -21,9 +21,9 @@
 
 	function toggleAudienceRoleFilters() {
 		var loggedInRadio = document.querySelector(
-			'input.phoenix-wp-gift-audience[value="logged_in"]'
+			'input.phoenix-gift-for-woocommerce-audience[value="logged_in"]'
 		);
-		var roleFilters = document.querySelector( '.phoenix-wp-gift-role-filters' );
+		var roleFilters = document.querySelector( '.phoenix-gift-for-woocommerce-role-filters' );
 
 		if ( ! roleFilters ) {
 			return;
@@ -34,13 +34,13 @@
 	}
 
 	function getOptionsContainer() {
-		return document.getElementById( 'phoenix-wp-gift-options' );
+		return document.getElementById( 'phoenix-gift-for-woocommerce-options' );
 	}
 
 	function getNextOptionIndex( container ) {
 		var maxIndex = -1;
 
-		container.querySelectorAll( '.phoenix-wp-gift-option-row' ).forEach( function ( row ) {
+		container.querySelectorAll( '.phoenix-gift-for-woocommerce-option-row' ).forEach( function ( row ) {
 			var index = parseInt( row.getAttribute( 'data-index' ), 10 );
 
 			if ( ! isNaN( index ) && index > maxIndex ) {
@@ -70,7 +70,7 @@
 
 	function addGiftOptionRow() {
 		var container = getOptionsContainer();
-		var template = document.getElementById( 'phoenix-wp-gift-option-template' );
+		var template = document.getElementById( 'phoenix-gift-for-woocommerce-option-template' );
 
 		if ( ! container || ! template || ! template.content ) {
 			return;
@@ -104,8 +104,8 @@
 	}
 
 	function loadVariationsForRow( row, selectedVariationId ) {
-		var productSelect = row.querySelector( '.phoenix-wp-gift-option-product' );
-		var variationSelect = row.querySelector( '.phoenix-wp-gift-option-variation' );
+		var productSelect = row.querySelector( '.phoenix-gift-for-woocommerce-option-product' );
+		var variationSelect = row.querySelector( '.phoenix-gift-for-woocommerce-option-variation' );
 
 		if ( ! productSelect || ! variationSelect ) {
 			return;
@@ -155,14 +155,14 @@
 	}
 
 	function bindGiftOptionRow( row ) {
-		var productSelect = row.querySelector( '.phoenix-wp-gift-option-product' );
-		var removeButton = row.querySelector( '.phoenix-wp-gift-remove-option' );
+		var productSelect = row.querySelector( '.phoenix-gift-for-woocommerce-option-product' );
+		var removeButton = row.querySelector( '.phoenix-gift-for-woocommerce-remove-option' );
 
 		if ( productSelect ) {
 			productSelect.addEventListener( 'change', function () {
 				loadVariationsForRow( row, 0 );
 			} );
-			loadVariationsForRow( row, row.querySelector( '.phoenix-wp-gift-option-variation' )?.value || 0 );
+			loadVariationsForRow( row, row.querySelector( '.phoenix-gift-for-woocommerce-option-variation' )?.value || 0 );
 		}
 
 		if ( removeButton ) {
@@ -173,7 +173,7 @@
 					return;
 				}
 
-				if ( container.querySelectorAll( '.phoenix-wp-gift-option-row' ).length <= 1 ) {
+				if ( container.querySelectorAll( '.phoenix-gift-for-woocommerce-option-row' ).length <= 1 ) {
 					return;
 				}
 
@@ -189,11 +189,11 @@
 			return;
 		}
 
-		container.querySelectorAll( '.phoenix-wp-gift-option-row' ).forEach( function ( row ) {
+		container.querySelectorAll( '.phoenix-gift-for-woocommerce-option-row' ).forEach( function ( row ) {
 			bindGiftOptionRow( row );
 		} );
 
-		var addButton = document.querySelector( '.phoenix-wp-gift-add-option' );
+		var addButton = document.querySelector( '.phoenix-gift-for-woocommerce-add-option' );
 
 		if ( addButton ) {
 			addButton.addEventListener( 'click', addGiftOptionRow );
@@ -201,7 +201,7 @@
 	}
 
 	document.addEventListener( 'DOMContentLoaded', function () {
-		var triggerRadios = document.querySelectorAll( 'input.phoenix-wp-gift-rule-trigger' );
+		var triggerRadios = document.querySelectorAll( 'input.phoenix-gift-for-woocommerce-rule-trigger' );
 
 		triggerRadios.forEach( function ( radio ) {
 			radio.addEventListener( 'change', toggleRuleTriggerRows );
@@ -209,7 +209,7 @@
 
 		toggleRuleTriggerRows();
 
-		var audienceRadios = document.querySelectorAll( 'input.phoenix-wp-gift-audience' );
+		var audienceRadios = document.querySelectorAll( 'input.phoenix-gift-for-woocommerce-audience' );
 
 		audienceRadios.forEach( function ( radio ) {
 			radio.addEventListener( 'change', toggleAudienceRoleFilters );

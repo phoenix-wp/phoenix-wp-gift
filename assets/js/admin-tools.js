@@ -6,7 +6,7 @@
 ( function () {
 	'use strict';
 
-	const form = document.querySelector( '.phoenix-wp-gift-import-form' );
+	const form = document.querySelector( '.phoenix-gift-for-woocommerce-import-form' );
 
 	if ( ! form ) {
 		return;

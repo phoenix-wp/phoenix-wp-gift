@@ -21,15 +21,15 @@ if ( ! function_exists( 'phoenix_wp_gift_fs' ) ) {
 				define( 'WP_FS__PRODUCT_31421_MULTISITE', true );
 			}
 
-			require_once PHOENIX_WP_GIFT_PATH . 'includes/freemius/start.php';
+			require_once PHOENIX_GIFT_FOR_WOOCOMMERCE_PATH . 'vendor/freemius/start.php';
 
 			$parent_slug = ( defined( 'PHOENIX_WP_CORE_VERSION' ) || class_exists( \PhoenixWP\Core\Plugin::class, false ) )
 				? 'phoenix-wp-core'
-				: 'phoenix-wp-gift';
+				: 'phoenix-gift-for-woocommerce';
 
 			$init = array(
 				'id'                  => '31421',
-				'slug'                => 'phoenix-wp-gift',
+				'slug'                => 'phoenix-gift-for-woocommerce',
 				'type'                => 'plugin',
 				'public_key'          => 'pk_9aad59dcbbfc8507b58947ba8d61a',
 				'is_premium'          => true,
@@ -38,14 +38,15 @@ if ( ! function_exists( 'phoenix_wp_gift_fs' ) ) {
 				'has_addons'          => false,
 				'has_paid_plans'      => true,
 				'has_free_plan'       => true,
+				'is_org_compliant'    => true,
 				'trial'               => array(
 					'days'               => 0,
 					'is_require_payment' => false,
 				),
 				'menu'                => array(
-					'slug'       => 'phoenix-wp-gift',
+					'slug'       => 'phoenix-gift-for-woocommerce',
 					// Must be a path relative to wp-admin (admin.php?page=…), not the slug alone.
-					'first-path' => 'admin.php?page=phoenix-wp-gift',
+					'first-path' => 'admin.php?page=phoenix-gift-for-woocommerce',
 					'account'    => true,
 					'contact'    => false,
 					'support'    => false,
@@ -56,8 +57,8 @@ if ( ! function_exists( 'phoenix_wp_gift_fs' ) ) {
 				'is_live'             => true,
 			);
 
-			if ( defined( 'PHOENIX_WP_GIFT_FS_SECRET_KEY' ) && PHOENIX_WP_GIFT_FS_SECRET_KEY !== '' ) {
-				$init['secret_key'] = PHOENIX_WP_GIFT_FS_SECRET_KEY;
+			if ( defined( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_FS_SECRET_KEY' ) && PHOENIX_GIFT_FOR_WOOCOMMERCE_FS_SECRET_KEY !== '' ) {
+				$init['secret_key'] = PHOENIX_GIFT_FOR_WOOCOMMERCE_FS_SECRET_KEY;
 			}
 
 			$phoenix_wp_gift_fs = fs_dynamic_init( $init );

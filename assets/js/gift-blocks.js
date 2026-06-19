@@ -1,5 +1,5 @@
 /**
- * Adds phoenix-wp-gift-cart-item class on Cart/Checkout block line items.
+ * Adds phoenix-gift-for-woocommerce-cart-item class on Cart/Checkout block line items.
  *
  * @package PhoenixWP\Gift
  */
@@ -32,7 +32,7 @@
 
 	const { registerCheckoutFilters } = window.wc.blocksCheckout;
 
-	registerCheckoutFilters( 'phoenix-wp-gift', {
+	registerCheckoutFilters( 'phoenix-gift-for-woocommerce', {
 		cartItemClass( defaultValue, extensions, args ) {
 			const itemId = parseInt( args?.cartItem?.id, 10 );
 
@@ -40,7 +40,7 @@
 				return defaultValue;
 			}
 
-			return ( defaultValue + ' phoenix-wp-gift-cart-item' ).trim();
+			return ( defaultValue + ' phoenix-gift-for-woocommerce-cart-item' ).trim();
 		},
 	} );
 } )();

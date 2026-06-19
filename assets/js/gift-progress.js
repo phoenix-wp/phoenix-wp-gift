@@ -17,7 +17,7 @@
 	let blocksInitialized = false;
 
 	function getRoots() {
-		return document.querySelectorAll( '.phoenix-wp-gift-progress-root' );
+		return document.querySelectorAll( '.phoenix-gift-for-woocommerce-progress-root' );
 	}
 
 	function scheduleRefresh() {
@@ -33,7 +33,7 @@
 		const empty = ! html || ( data && data.empty );
 
 		root.innerHTML = html;
-		root.classList.toggle( 'phoenix-wp-gift-progress-root--empty', empty );
+		root.classList.toggle( 'phoenix-gift-for-woocommerce-progress-root--empty', empty );
 	}
 
 	async function refreshRoot( root ) {

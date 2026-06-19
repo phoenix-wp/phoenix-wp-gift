@@ -8,13 +8,13 @@
 ## Gift — Freemius re-deploy (same version)
 
 ```powershell
-cd phoenix-wp-gift
+cd phoenix-gift-for-woocommerce
 .\scripts\publish-release.ps1 -Version 1.0.0
 ```
 
-Then **Freemius Dashboard** (no API): Deployment → delete old 1.0.0 → upload `dist/phoenix-wp-gift-1.0.0.zip` → Released.
+Then **Freemius Dashboard** (no API): Deployment → delete old 1.0.0 → upload `dist/phoenix-gift-for-woocommerce-1.0.0.zip` → Released.
 
-ZIP is built via `%TEMP%` staging (OneDrive-safe). Root folder inside ZIP: `phoenix-wp-gift/`.
+ZIP is built via `%TEMP%` staging (OneDrive-safe). Root folder inside ZIP: `phoenix-gift-for-woocommerce/`.
 
 ## Bridge — live shop
 

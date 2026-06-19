@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <bundle>
-	<domain name="phoenix-wp-gift">
+	<domain name="phoenix-gift-for-woocommerce">
 		<project name="PhoenixWP Gift Product">
 			<source>
 				<directory>.</directory>
 				<exclude>
-					<directory>includes/freemius</directory>
 					<directory>vendor</directory>
 					<directory>dist</directory>
 					<directory>node_modules</directory>
@@ -15,12 +14,11 @@
 				<directory>languages</directory>
 			</target>
 			<template>
-				<file>languages/phoenix-wp-gift.pot</file>
+				<file>languages/phoenix-gift-for-woocommerce.pot</file>
 			</template>
 		</project>
 	</domain>
 	<exclude>
-		<directory>includes/freemius</directory>
 		<directory>vendor</directory>
 		<directory>dist</directory>
 	</exclude>

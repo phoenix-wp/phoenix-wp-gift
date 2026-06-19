@@ -5,8 +5,8 @@
 		var subtotalRadio = document.querySelector(
 			'input[name="phoenix_wp_gift_settings[trigger_type]"][value="subtotal"]'
 		);
-		var subtotalRow = document.querySelector( '.phoenix-wp-gift-trigger-subtotal' );
-		var quantityRow = document.querySelector( '.phoenix-wp-gift-trigger-quantity' );
+		var subtotalRow = document.querySelector( '.phoenix-gift-for-woocommerce-trigger-subtotal' );
+		var quantityRow = document.querySelector( '.phoenix-gift-for-woocommerce-trigger-quantity' );
 
 		if ( ! subtotalRadio || ! subtotalRow || ! quantityRow ) {
 			return;

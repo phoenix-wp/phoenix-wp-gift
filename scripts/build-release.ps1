@@ -1,4 +1,4 @@
-# Build a distributable ZIP for GitHub Release / Freemius upload.
+# Build a distributable ZIP for GitHub Release / Freemius / wordpress.org submit.
 # Usage: .\scripts\build-release.ps1 [-Version 1.0.0]
 
 param(
@@ -7,7 +7,12 @@ param(
 
 $ErrorActionPreference = 'Stop'
 $root = Split-Path -Parent $PSScriptRoot
-$pluginSlug = 'phoenix-wp-gift'
+$pluginSlug = 'phoenix-gift-for-woocommerce'
+$coreHelpers = Join-Path (Split-Path -Parent $root) 'phoenix-wp-core\scripts\wp-org-release-helpers.ps1'
+if (-not (Test-Path $coreHelpers)) {
+	throw "Missing shared helpers: $coreHelpers"
+}
+. $coreHelpers
 
 if ($Version -eq '') {
 	$mainFile = Join-Path $root "$pluginSlug.php"
@@ -23,45 +28,14 @@ $distDir = Join-Path $root 'dist'
 $stageDir = Join-Path $env:TEMP $pluginSlug
 $zipPath = Join-Path $distDir "$pluginSlug-$Version.zip"
 
-if (Test-Path $stageDir) {
-	Remove-Item -Recurse -Force $stageDir -ErrorAction SilentlyContinue
-}
-New-Item -ItemType Directory -Path $stageDir -Force | Out-Null
 if (-not (Test-Path $distDir)) {
 	New-Item -ItemType Directory -Path $distDir -Force | Out-Null
 }
 
-Get-ChildItem -Path $root -Force | Where-Object {
-	$name = $_.Name
-	$name -notin @('.git', '.github', 'dist', 'scripts', 'wp-org-assets', 'composer.lock', 'composer.phar', 'wp-cli.phar', '.DS_Store')
-} | ForEach-Object {
-	Copy-Item -Path $_.FullName -Destination $stageDir -Recurse -Force
-}
+Copy-PhoenixPluginToStage -Root $root -StageDir $stageDir -ExcludeNames (Get-PhoenixWpOrgStageExcludeNames)
+Remove-PhoenixFreemiusDevPaths -StageDir $stageDir
+Test-PhoenixFreemiusVendorLayout -StageDir $stageDir
+New-PhoenixPluginReleaseZip -StageDir $stageDir -PluginSlug $pluginSlug -ZipPath $zipPath
+Test-PhoenixPluginReleaseZip -ZipPath $zipPath -PluginSlug $pluginSlug -RequireDistinctUris
 
-# Drop Freemius SDK dev-only folders from the distribution ZIP.
-$freemiusDevPaths = @(
-	(Join-Path $stageDir 'includes\freemius\.github'),
-	(Join-Path $stageDir 'includes\freemius\gulptasks'),
-	(Join-Path $stageDir 'includes\freemius\.phpstan')
-)
-foreach ($path in $freemiusDevPaths) {
-	if (Test-Path $path) {
-		Remove-Item -Recurse -Force $path
-	}
-}
-
-if (Test-Path $zipPath) {
-	Remove-Item -Force $zipPath -ErrorAction SilentlyContinue
-}
-
-# Freemius rejects PowerShell Compress-Archive ZIPs (backslash paths). Use tar.
-Push-Location $env:TEMP
-try {
-	tar -a -c -f $zipPath $pluginSlug
-} finally {
-	Pop-Location
-}
-
-Remove-Item -Recurse -Force $stageDir -ErrorAction SilentlyContinue
-
-Write-Host "Built $zipPath (tar, forward-slash paths for Freemius)"
+Write-Host "Built $zipPath (tar, forward-slash paths for Freemius/wp.org)"

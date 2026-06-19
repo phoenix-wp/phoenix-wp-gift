@@ -17,11 +17,11 @@ WooCommerce extension: automatically add a **free gift product** to the cart.
 ## Setup
 
 ```powershell
-cd phoenix-wp-gift
+cd phoenix-gift-for-woocommerce
 C:\php\php.exe ..\phoenix-wp-core\composer.phar install
 ```
 
-Copy to `wp-content/plugins/phoenix-wp-gift`, activate Core + Gift + WooCommerce.
+Copy to `wp-content/plugins/phoenix-gift-for-woocommerce`, activate Core + Gift + WooCommerce.
 
 **Admin:** PhoenixWP → Gift Product
 

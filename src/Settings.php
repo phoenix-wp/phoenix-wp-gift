@@ -155,6 +155,6 @@ final class Settings {
 			return $label;
 		}
 
-		return __( 'Free gift', 'phoenix-wp-gift' );
+		return __( 'Free gift', 'phoenix-gift-for-woocommerce' );
 	}
 }

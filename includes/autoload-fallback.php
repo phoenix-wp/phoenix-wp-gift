@@ -20,7 +20,7 @@ function phoenix_wp_gift_register_autoload_fallback(): void {
 			}
 
 			$relative = substr( $class, strlen( $prefix ) );
-			$file     = PHOENIX_WP_GIFT_PATH . 'src/' . str_replace( '\\', '/', $relative ) . '.php';
+			$file     = PHOENIX_GIFT_FOR_WOOCOMMERCE_PATH . 'src/' . str_replace( '\\', '/', $relative ) . '.php';
 
 			if ( is_readable( $file ) ) {
 				require_once $file;
@@ -28,5 +28,5 @@ function phoenix_wp_gift_register_autoload_fallback(): void {
 		}
 	);
 
-	require_once PHOENIX_WP_GIFT_PATH . 'src/functions.php';
+	require_once PHOENIX_GIFT_FOR_WOOCOMMERCE_PATH . 'src/functions.php';
 }

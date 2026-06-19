@@ -3,7 +3,7 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: PhoenixWP Gift Product 1.0.0\n"
-"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/phoenix-wp-gift\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/phoenix-gift-for-woocommerce\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
 "MIME-Version: 1.0\n"
@@ -12,10 +12,10 @@ msgstr ""
 "POT-Creation-Date: 2026-06-07T16:10:27+00:00\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "X-Generator: WP-CLI 2.12.0\n"
-"X-Domain: phoenix-wp-gift\n"
+"X-Domain: phoenix-gift-for-woocommerce\n"
 
 #. Plugin Name of the plugin
-#: phoenix-wp-gift.php
+#: phoenix-gift-for-woocommerce.php
 #: src/Admin/Menu.php:253
 #: src/Plugin.php:115
 msgid "PhoenixWP Gift Product"
@@ -23,17 +23,17 @@ msgstr ""
 
 #. Plugin URI of the plugin
 #. Author URI of the plugin
-#: phoenix-wp-gift.php
+#: phoenix-gift-for-woocommerce.php
 msgid "https://phoenixwp.com"
 msgstr ""
 
 #. Description of the plugin
-#: phoenix-wp-gift.php
+#: phoenix-gift-for-woocommerce.php
 msgid "Add a free gift product to WooCommerce carts (Free tier). PhoenixWP extension."
 msgstr ""
 
 #. Author of the plugin
-#: phoenix-wp-gift.php
+#: phoenix-gift-for-woocommerce.php
 msgid "PhoenixWP"
 msgstr ""
 
@@ -143,7 +143,7 @@ msgid "Free gift"
 msgstr ""
 
 #: src/Admin/Menu.php:448
-msgid "Badge in the mini cart and classic (shortcode) checkout only. On the cart page and with Cart/Checkout blocks, use CSS class phoenix-wp-gift-cart-item — see Documentation & FAQ (phoenixwp.com)."
+msgid "Badge in the mini cart and classic (shortcode) checkout only. On the cart page and with Cart/Checkout blocks, use CSS class phoenix-gift-for-woocommerce-cart-item — see Documentation & FAQ (phoenixwp.com)."
 msgstr ""
 
 #: src/Admin/Menu.php:494

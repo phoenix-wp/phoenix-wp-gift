@@ -1,6 +1,6 @@
 # Freemius — Gift Product (Phase 4)
 
-> Product ID `31421` · Slug `phoenix-wp-gift` · Plan `pro`
+> Product ID `31421` · Slug `phoenix-gift-for-woocommerce` · Plan `pro`
 
 ---
 
@@ -8,7 +8,7 @@
 
 | File | Role |
 |------|------|
-| `includes/freemius/` | Official [WordPress SDK](https://github.com/Freemius/wordpress-sdk) |
+| `vendor/freemius/` | Official [WordPress SDK](https://github.com/Freemius/wordpress-sdk) (wp.org-konform) |
 | `includes/freemius-gift.php` | `fs_dynamic_init()` bootstrap |
 | `src/Freemius/License_Bridge.php` | Pro license → `gift_*` feature gates + Core dashboard tier |
 
@@ -19,19 +19,19 @@
 In `wp-config.php` (never commit):
 
 ```php
-define( 'PHOENIX_WP_GIFT_FS_SECRET_KEY', 'sk_…' );
+define( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_FS_SECRET_KEY', 'sk_…' );
 ```
 
 ---
 
 ## Activate license
 
-1. **PhoenixWP → Gift Product** (or top-level Gift menu without Core)
-2. Freemius **Account** submenu → enter license key from purchase email
-3. Redirect lands on `admin.php?page=phoenix-wp-gift` (not `/wp-admin/phoenix-wp-gift`)
-4. Admin shows: *Gift Pro license is active on this site.*
+1. **PhoenixWP Gift → License** (standalone) or **PhoenixWP → Gift → License** (with Core)
+2. Enter license key — or Freemius **Account** for full account UI
+3. Optional first connect: link *First-time setup* on License page (Free or license + email opt-in)
+4. `first-path` in `freemius-gift.php`: `admin.php?page=phoenix-gift-for-woocommerce`
 
-`first-path` in `freemius-gift.php` must stay `admin.php?page=phoenix-wp-gift`.
+**Freemius Dashboard (SDK Integration):** Top-level menu · slug `'phoenix-gift-for-woocommerce'` · path `admin.php?page=phoenix-gift-for-woocommerce` — see Core `FREEMIUS-PRODUCT-PLAYBOOK.md` C.1.2.
 
 ---
 

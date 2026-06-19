@@ -6,7 +6,7 @@
 
 | Field | Value |
 |-------|-------|
-| Slug | `phoenix-wp-gift` |
+| Slug | `phoenix-gift-for-woocommerce` |
 | Version | **1.0.0** (Launch; intern vorher 1.2.x–1.6.x auf Staging) |
 | Namespace | `PhoenixWP\Gift\` |
 | Type | Extension (Free + Pro via Freemius) |
@@ -69,7 +69,8 @@ Sibling-Repo zu `phoenix-wp-core` — **nicht** im Core-Ordner entwickeln.
 | `phoenix_wp_gift_settings` | Free-Einstellungen (eine Regel) |
 | `phoenix_wp_gift_rules` | Pro-Regeln (Array) |
 | Cart-Flag | `phoenix_wp_gift` |
-| Cart/Order Rule-ID | `phoenix_wp_gift_rule_id` |
+| Cart/Order Rule-ID | `phoenix_wp_gift_rule_id` (cart) · `_phoenix_wp_gift_rule_id` (order, hidden) |
+| Order gift flag (hidden) | `_phoenix_wp_gift` |
 | Session Choice | `phoenix_wp_gift_chosen_{rule_id}` |
 
 ### Regel-Schema (Auszug)
@@ -107,9 +108,9 @@ Bridge: `License_Bridge` → Core `phoenix_wp_core_license_remote_validate` + Fr
 
 | Route | Methode | Auth |
 |-------|---------|------|
-| `/wp-json/phoenix-wp-gift/v1/progress` | GET | öffentlich (Cart-Kontext) |
-| `/wp-json/phoenix-wp-gift/v1/gift-choice` | GET | öffentlich |
-| `/wp-json/phoenix-wp-gift/v1/gift-choice/select` | POST | Nonce |
+| `/wp-json/phoenix-gift-for-woocommerce/v1/progress` | GET | öffentlich (Cart-Kontext) |
+| `/wp-json/phoenix-gift-for-woocommerce/v1/gift-choice` | GET | öffentlich |
+| `/wp-json/phoenix-gift-for-woocommerce/v1/gift-choice/select` | POST | Nonce |
 
 ---
 
@@ -158,11 +159,11 @@ Bridge: `License_Bridge` → Core `phoenix_wp_core_license_remote_validate` + Fr
 
 | Datei | Zweck |
 |-------|--------|
-| `languages/phoenix-wp-gift.pot` | Template (~175 Strings), WP-CLI |
-| `languages/phoenix-wp-gift-de_DE.po` | Deutsch — **in Loco ausfüllen** |
-| `languages/phoenix-wp-gift-de_DE.mo` | Kompiliert (nach Übersetzung neu: `wp i18n make-mo`) |
+| `languages/phoenix-gift-for-woocommerce.pot` | Template (~175 Strings), WP-CLI |
+| `languages/phoenix-gift-for-woocommerce-de_DE.po` | Deutsch — **in Loco ausfüllen** |
+| `languages/phoenix-gift-for-woocommerce-de_DE.mo` | Kompiliert (nach Übersetzung neu: `wp i18n make-mo`) |
 
-Freemius: `includes/freemius/languages/` (Domain `freemius`) — nicht anfassen.
+Freemius: `vendor/freemius/languages/` (Domain `freemius`) — nicht anfassen.
 
 Regenerieren: `phoenix-wp-core/scripts/generate-i18n.ps1` — Details in `phoenix-wp-core/docs/I18N-STRATEGY.md`
 
@@ -172,9 +173,22 @@ Regenerieren: `phoenix-wp-core/scripts/generate-i18n.ps1` — Details in `phoeni
 
 | Ort | Link |
 |-----|------|
-| phoenixwp.com DE | `/docs/phoenix-wp-gift/` |
+| phoenixwp.com DE | `/phoenix-wp-gift/` |
 | Plugin FAQ | [FAQ.md](FAQ.md) |
 | Freemius | [FREEMIUS.md](FREEMIUS.md) |
+
+---
+
+## Geplant v1.1.0 — Uninstall & Daten
+
+Checkbox in den Einstellungen: *Beim Deinstallieren alle Plugin-Daten löschen* (Default: aus).
+
+| Bei „löschen“ | Keys / Daten |
+|----------------|--------------|
+| Options | `phoenix_wp_gift_settings`, `phoenix_wp_gift_rules` |
+| Order item meta | `_phoenix_wp_gift`, `_phoenix_wp_gift_rule_id` (WC-API, alle Bestellungen) |
+
+Spec: [`phoenix-wp-core/docs/UNINSTALL-DATA-RETENTION.md`](../../phoenix-wp-core/docs/UNINSTALL-DATA-RETENTION.md)
 
 ---
 
