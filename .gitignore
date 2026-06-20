@@ -1,5 +1,6 @@
 /vendor/*
 !/vendor/freemius/
+/premium/
 /dist/
 /composer.phar
 /wp-cli.phar

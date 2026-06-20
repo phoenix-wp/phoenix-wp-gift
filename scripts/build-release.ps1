@@ -1,8 +1,12 @@
-# Build a distributable ZIP for GitHub Release / Freemius / wordpress.org submit.
-# Usage: .\scripts\build-release.ps1 [-Version 1.0.0]
+# Build distributable ZIPs for Freemius (full) and wordpress.org (free only).
+# Usage:
+#   .\scripts\build-release.ps1 -Channel Freemius
+#   .\scripts\build-release.ps1 -Channel WpOrg
 
 param(
-	[string]$Version = ''
+	[string]$Version = '',
+	[ValidateSet('Freemius', 'WpOrg')]
+	[string]$Channel = 'Freemius'
 )
 
 $ErrorActionPreference = 'Stop'
@@ -26,16 +30,35 @@ if ($Version -eq '') {
 
 $distDir = Join-Path $root 'dist'
 $stageDir = Join-Path $env:TEMP $pluginSlug
-$zipPath = Join-Path $distDir "$pluginSlug-$Version.zip"
+$zipSuffix = if ($Channel -eq 'WpOrg') { '-wporg' } else { '' }
+$zipPath = Join-Path $distDir "$pluginSlug-$Version$zipSuffix.zip"
 
 if (-not (Test-Path $distDir)) {
 	New-Item -ItemType Directory -Path $distDir -Force | Out-Null
 }
 
-Copy-PhoenixPluginToStage -Root $root -StageDir $stageDir -ExcludeNames (Get-PhoenixWpOrgStageExcludeNames)
+$excludeNames = Get-PhoenixWpOrgStageExcludeNames
+if ($Channel -eq 'WpOrg') {
+	$excludeNames += 'premium'
+}
+
+Copy-PhoenixPluginToStage -Root $root -StageDir $stageDir -ExcludeNames $excludeNames
+
+	if ($Channel -eq 'Freemius') {
+	Copy-PhoenixPremiumOverlay -Root $root -StageDir $stageDir
+	$premiumSrcInStage = Join-Path $stageDir 'premium\src'
+	if (Test-Path $premiumSrcInStage) {
+		Remove-Item -Recurse -Force $premiumSrcInStage
+	}
+}
+
 Remove-PhoenixFreemiusDevPaths -StageDir $stageDir
 Test-PhoenixFreemiusVendorLayout -StageDir $stageDir
 New-PhoenixPluginReleaseZip -StageDir $stageDir -PluginSlug $pluginSlug -ZipPath $zipPath
-Test-PhoenixPluginReleaseZip -ZipPath $zipPath -PluginSlug $pluginSlug -RequireDistinctUris
+Test-PhoenixPluginReleaseZip -ZipPath $zipPath -PluginSlug $pluginSlug -RequireDistinctUris:($Channel -eq 'WpOrg')
 
-Write-Host "Built $zipPath (tar, forward-slash paths for Freemius/wp.org)"
+if ($Channel -eq 'WpOrg') {
+	Test-PhoenixWpOrgZipNoPremiumPaths -ZipPath $zipPath -PluginSlug $pluginSlug
+}
+
+Write-Host "Built $zipPath (Channel=$Channel, tar forward-slash paths)"

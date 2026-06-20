@@ -11,6 +11,14 @@ defined( 'ABSPATH' ) || exit;
  * Registers the extension PSR-4 autoloader.
  */
 function phoenix_wp_gift_register_autoload_fallback(): void {
+	static $registered = false;
+
+	if ( $registered ) {
+		return;
+	}
+
+	$registered = true;
+
 	spl_autoload_register(
 		static function ( string $class ): void {
 			$prefix = 'PhoenixWP\\Gift\\';
@@ -19,11 +27,22 @@ function phoenix_wp_gift_register_autoload_fallback(): void {
 				return;
 			}
 
-			$relative = substr( $class, strlen( $prefix ) );
-			$file     = PHOENIX_GIFT_FOR_WOOCOMMERCE_PATH . 'src/' . str_replace( '\\', '/', $relative ) . '.php';
+			$relative    = substr( $class, strlen( $prefix ) );
+			$premium_file = PHOENIX_GIFT_FOR_WOOCOMMERCE_PATH . 'premium/src/' . str_replace( '\\', '/', $relative ) . '.php';
+			$free_file    = PHOENIX_GIFT_FOR_WOOCOMMERCE_PATH . 'src/' . str_replace( '\\', '/', $relative ) . '.php';
 
-			if ( is_readable( $file ) ) {
-				require_once $file;
+			if (
+				defined( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_HAS_PREMIUM' )
+				&& PHOENIX_GIFT_FOR_WOOCOMMERCE_HAS_PREMIUM
+				&& is_readable( $premium_file )
+			) {
+				require_once $premium_file;
+
+				return;
+			}
+
+			if ( is_readable( $free_file ) ) {
+				require_once $free_file;
 			}
 		}
 	);

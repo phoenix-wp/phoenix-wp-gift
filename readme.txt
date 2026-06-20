@@ -6,7 +6,7 @@ Tested up to: 7.0
 Requires PHP: 8.2
 WC requires at least: 8.0
 WC tested up to: 10.8.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -83,6 +83,9 @@ Check that the rule is enabled, the gift product is purchasable, and the thresho
 * Standalone admin menu, License submenu, and manual license key entry (no Core required).
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+wp.org compliance: Pro code removed from free package; dual-build WpOrg/Freemius.
 
 = 1.0.0 =
 Initial release on WordPress.org.
