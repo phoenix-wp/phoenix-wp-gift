@@ -27,7 +27,18 @@ WpOrg ZIP: no `premium/`, no Pro classes under `src/`, `is_premium => false` in 
 
 Freemius ZIP: overlays `premium/src/` onto `src/` and includes `premium/bootstrap.php`.
 
-## Local setup
+## Git history (public repo)
+
+Pro-Dateien wurden aus der **gesamten Git-Historie** entfernt (`scripts/purge-pro-from-history.ps1`):
+
+1. 18 dedizierte Pro-Pfade aus allen Commits gelöscht  
+2. Gemischte Dateien (`Gift_Handler.php`, `Plugin.php`, `Menu.php`, …) auf Free-Tier-Stand synchronisiert  
+3. `git push --force` auf `main` + Tags
+
+**Wiederholung (nur bei Bedarf):** Working tree clean → `.\scripts\purge-pro-from-history.ps1 -ForcePush`
+
+`premium/` war nie committed und bleibt gitignored.
+
 
 1. Keep `premium/` only on trusted machines (or private storage).
 2. Clone public `phoenix-wp-gift` → copy `premium/` from secure backup.
