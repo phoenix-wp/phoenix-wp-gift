@@ -99,7 +99,7 @@ final class Plugin {
 			array(
 				'slug'    => 'phoenix-gift-for-woocommerce',
 				// Plain name: Core fires this hook on plugins_loaded (before init); no __() here (WP 6.7 JIT notice).
-				'name'    => 'Phoenix Gift for WooCommerce',
+				'name'    => phoenix_wp_gift_get_plugin_display_name(),
 				'version' => PHOENIX_GIFT_FOR_WOOCOMMERCE_VERSION,
 				'type'    => Module_Registry::TYPE_EXTENSION,
 				'tier'    => 'free',
@@ -190,15 +190,6 @@ final class Plugin {
 	public function dependency_notices(): void {
 		if ( ! current_user_can( 'manage_woocommerce' ) ) {
 			return;
-		}
-
-		if ( ! phoenix_wp_gift_is_core_active() ) {
-			echo '<div class="notice notice-info"><p>';
-			echo esc_html__(
-				'PhoenixWP Gift runs standalone. Open PhoenixWP Gift → License to activate Pro, or use PhoenixWP Core settings when Core is installed.',
-				'phoenix-gift-for-woocommerce'
-			);
-			echo '</p></div>';
 		}
 
 		if ( current_user_can( 'manage_options' ) && ! function_exists( 'phoenix_wp_gift_fs' ) ) {

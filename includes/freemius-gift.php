@@ -2,6 +2,8 @@
 /**
  * Freemius SDK bootstrap for PhoenixWP Gift Product.
  *
+ * Connect opt-in on first activation — see phoenix-wp-core/docs/FREEMIUS-CONNECT-OPTIN.md
+ *
  * @package PhoenixWP\Gift
  */
 
@@ -62,6 +64,8 @@ if ( ! function_exists( 'phoenix_wp_gift_fs' ) ) {
 			}
 
 			$phoenix_wp_gift_fs = fs_dynamic_init( $init );
+
+			$phoenix_wp_gift_fs->add_filter( 'pricing/show_annual_in_monthly', '__return_false' );
 		}
 
 		return $phoenix_wp_gift_fs;

@@ -24,6 +24,40 @@ function phoenix_wp_gift_premium_loaded(): bool {
 }
 
 /**
+ * Whether this install uses the Freemius (Pro) distribution package.
+ */
+function phoenix_wp_gift_is_pro_distribution(): bool {
+	return phoenix_wp_gift_premium_loaded();
+}
+
+/**
+ * Short admin page title (under PhoenixWP Core submenu).
+ */
+function phoenix_wp_gift_get_admin_page_title(): string {
+	return phoenix_wp_gift_is_pro_distribution()
+		? __( 'Gift Pro', 'phoenix-gift-for-woocommerce' )
+		: __( 'Gift', 'phoenix-gift-for-woocommerce' );
+}
+
+/**
+ * Top-level admin menu title (standalone without Core).
+ */
+function phoenix_wp_gift_get_admin_menu_title(): string {
+	return phoenix_wp_gift_is_pro_distribution()
+		? __( 'PhoenixWP Gift Pro', 'phoenix-gift-for-woocommerce' )
+		: __( 'PhoenixWP Gift', 'phoenix-gift-for-woocommerce' );
+}
+
+/**
+ * Plugin list / registry display name.
+ */
+function phoenix_wp_gift_get_plugin_display_name(): string {
+	return phoenix_wp_gift_is_pro_distribution()
+		? 'Phoenix Gift for WooCommerce Pro'
+		: 'Phoenix Gift for WooCommerce';
+}
+
+/**
  * Whether Pro stored rules (not free settings) drive the storefront.
  */
 function phoenix_wp_gift_uses_pro_rules(): bool {
@@ -65,6 +99,15 @@ function phoenix_wp_gift_is_pro_active( string $feature ): bool {
 	}
 
 	$feature = 'gift_' . sanitize_key( $feature );
+
+	if (
+		function_exists( 'phoenix_wp_core_is_dev_tier_simulator_enabled' )
+		&& phoenix_wp_core_is_dev_tier_simulator_enabled()
+		&& function_exists( 'phoenix_wp_core_get_dev_tier_override' )
+		&& 'free' === phoenix_wp_core_get_dev_tier_override( 'phoenix-gift-for-woocommerce' )
+	) {
+		return false;
+	}
 
 	if ( class_exists( \PhoenixWP\Gift\Freemius\License_Bridge::class ) && \PhoenixWP\Gift\Freemius\License_Bridge::is_pro_license_active() ) {
 		return true;

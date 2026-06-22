@@ -155,6 +155,15 @@ final class License_Bridge {
 	 * Whether a valid Freemius Pro license is active on this site.
 	 */
 	public static function is_pro_license_active(): bool {
+		if (
+			function_exists( 'phoenix_wp_core_is_dev_tier_simulator_enabled' )
+			&& phoenix_wp_core_is_dev_tier_simulator_enabled()
+			&& function_exists( 'phoenix_wp_core_get_dev_tier_override' )
+			&& 'free' === phoenix_wp_core_get_dev_tier_override( self::MODULE_SLUG )
+		) {
+			return false;
+		}
+
 		if ( ! function_exists( 'phoenix_wp_gift_fs' ) ) {
 			return false;
 		}

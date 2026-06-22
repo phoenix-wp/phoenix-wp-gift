@@ -3,7 +3,7 @@
  * Plugin Name:       Phoenix Gift for WooCommerce
  * Plugin URI:        https://phoenixwp.com/phoenix-wp-gift/
  * Description:       Add a free gift product to WooCommerce carts (Free tier). PhoenixWP extension.
- * Version:           1.0.1
+ * Version:           1.0.3
  * Requires at least: 6.7
  * Tested up to:      7.0
  * Requires PHP:      8.2
@@ -22,7 +22,7 @@
 
 defined( 'ABSPATH' ) || exit;
 
-define( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_VERSION', '1.0.1' );
+define( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_VERSION', '1.0.3' );
 define( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_FILE', __FILE__ );
 define( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_PATH', plugin_dir_path( __FILE__ ) );
 define( 'PHOENIX_GIFT_FOR_WOOCOMMERCE_URL', plugin_dir_url( __FILE__ ) );

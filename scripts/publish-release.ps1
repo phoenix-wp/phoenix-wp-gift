@@ -15,7 +15,7 @@ $root = Split-Path -Parent $PSScriptRoot
 $pluginSlug = 'phoenix-gift-for-woocommerce'
 $buildScript = Join-Path $PSScriptRoot 'build-release.ps1'
 
-& $buildScript -Version $Version
+& $buildScript -Channel Freemius -Version $Version
 
 if ($Version -eq '') {
 	$mainFile = Join-Path $root "$pluginSlug.php"

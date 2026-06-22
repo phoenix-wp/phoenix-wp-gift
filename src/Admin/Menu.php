@@ -97,8 +97,8 @@ final class Menu {
 
 	public function register_menu(): void {
 
-		$page_title = __( 'Gift', 'phoenix-gift-for-woocommerce' );
-		$menu_title = __( 'PhoenixWP Gift', 'phoenix-gift-for-woocommerce' );
+		$page_title = phoenix_wp_gift_get_admin_page_title();
+		$menu_title = phoenix_wp_gift_get_admin_menu_title();
 
 		if ( ! phoenix_wp_gift_is_core_active() ) {
 
@@ -207,7 +207,7 @@ final class Menu {
 
 		echo '<div class="wrap">';
 
-		echo '<h1>' . esc_html__( 'PhoenixWP Gift', 'phoenix-gift-for-woocommerce' ) . '</h1>';
+		echo '<h1>' . esc_html( phoenix_wp_gift_get_admin_menu_title() ) . '</h1>';
 
 		printf(
 			'<p><a class="button button-secondary" href="%1$s" target="_blank" rel="noopener noreferrer">%2$s</a></p>',

@@ -4,6 +4,21 @@
 
 ---
 
+## Connect / Opt-in (Aktivierung)
+
+Beim **ersten Aktivieren** zeigt das Freemius SDK die Connect-Maske („Verpasse nie wieder ein wichtiges Update“). Gilt für **WpOrg-ZIP** und **Freemius-ZIP**.
+
+| Status | Version |
+|--------|---------|
+| ✅ Verifiziert | **1.0.1** (beide Kanäle) |
+| ✅ Build-Guards | **1.0.3** WpOrg + Freemius (`Test-PhoenixWpOrgZipPhpNoBom`, unexpected artifacts) |
+
+**Freemius Dashboard:** Upload **1.0.3** wenn noch älter — siehe [`FREEMIUS-RELEASE-1.0.3.md`](FREEMIUS-RELEASE-1.0.3.md).
+
+Checkliste: [`FREEMIUS-CONNECT-OPTIN.md`](../../phoenix-wp-core/docs/FREEMIUS-CONNECT-OPTIN.md)
+
+---
+
 ## Integration
 
 | File | Role |

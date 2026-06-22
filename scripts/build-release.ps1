@@ -28,6 +28,12 @@ if ($Version -eq '') {
 	}
 }
 
+$wpOrgVersion = ''
+if ($Channel -eq 'WpOrg') {
+	$wpOrgVersion = Get-PhoenixWpOrgActiveReleaseVersion -Root $root
+	$Version = $wpOrgVersion
+}
+
 $distDir = Join-Path $root 'dist'
 $stageDir = Join-Path $env:TEMP $pluginSlug
 $zipSuffix = if ($Channel -eq 'WpOrg') { '-wporg' } else { '' }
@@ -44,12 +50,27 @@ if ($Channel -eq 'WpOrg') {
 
 Copy-PhoenixPluginToStage -Root $root -StageDir $stageDir -ExcludeNames $excludeNames
 
-	if ($Channel -eq 'Freemius') {
+if ($Channel -eq 'WpOrg') {
+	Apply-PhoenixWpOrgReleaseMetadata `
+		-Root $root `
+		-StageDir $stageDir `
+		-PluginSlug $pluginSlug `
+		-WpOrgVersion $wpOrgVersion `
+		-VersionConstantName 'PHOENIX_GIFT_FOR_WOOCOMMERCE_VERSION'
+	Remove-PhoenixWpOrgStageArtifacts -StageDir $stageDir
+}
+
+if ($Channel -eq 'Freemius') {
 	Copy-PhoenixPremiumOverlay -Root $root -StageDir $stageDir
 	$premiumSrcInStage = Join-Path $stageDir 'premium\src'
 	if (Test-Path $premiumSrcInStage) {
 		Remove-Item -Recurse -Force $premiumSrcInStage
 	}
+	Set-PhoenixFreemiusPluginDisplayName `
+		-StageDir $stageDir `
+		-PluginSlug $pluginSlug `
+		-DisplayName 'Phoenix Gift for WooCommerce Pro' `
+		-Description 'Add free gift products to WooCommerce carts with the Pro rule engine. PhoenixWP extension.'
 }
 
 Remove-PhoenixFreemiusDevPaths -StageDir $stageDir
@@ -57,8 +78,22 @@ Test-PhoenixFreemiusVendorLayout -StageDir $stageDir
 New-PhoenixPluginReleaseZip -StageDir $stageDir -PluginSlug $pluginSlug -ZipPath $zipPath
 Test-PhoenixPluginReleaseZip -ZipPath $zipPath -PluginSlug $pluginSlug -RequireDistinctUris:($Channel -eq 'WpOrg')
 
+Test-PhoenixFreemiusConnectBootstrap `
+	-ZipPath $zipPath `
+	-PluginSlug $pluginSlug `
+	-FreemiusBootstrapFile 'includes/freemius-gift.php'
+
 if ($Channel -eq 'WpOrg') {
-	Test-PhoenixWpOrgZipNoPremiumPaths -ZipPath $zipPath -PluginSlug $pluginSlug
+	Test-PhoenixWpOrgZipNoPremiumPaths `
+		-ZipPath $zipPath `
+		-PluginSlug $pluginSlug `
+		-FreemiusBootstrapFile 'includes/freemius-gift.php'
+	Test-PhoenixWpOrgZipUnexpectedArtifacts `
+		-ZipPath $zipPath `
+		-PluginSlug $pluginSlug
+	Test-PhoenixWpOrgZipPhpNoBom `
+		-ZipPath $zipPath `
+		-PluginSlug $pluginSlug
 }
 
 Write-Host "Built $zipPath (Channel=$Channel, tar forward-slash paths)"

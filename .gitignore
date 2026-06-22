@@ -2,9 +2,11 @@
 !/vendor/freemius/
 /premium/
 /dist/
+/svn-wporg/
 /composer.phar
 /wp-cli.phar
 *.log
+*.zip
 .DS_Store
 *-backup-*.po~
 *.po~
