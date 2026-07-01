@@ -9,7 +9,7 @@
  * Requires PHP:      8.2
  * Requires Plugins:  woocommerce
  * WC requires at least: 8.0
- * WC tested up to:   10.8.1
+ * WC tested up to:   10.9.1
  * Author:            PhoenixWP
  * Author URI:        https://phoenixwp.com
  * License:           GPL-2.0-or-later

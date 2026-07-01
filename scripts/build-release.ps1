@@ -73,15 +73,19 @@ if ($Channel -eq 'Freemius') {
 		-Description 'Add free gift products to WooCommerce carts with the Pro rule engine. PhoenixWP extension.'
 }
 
-Remove-PhoenixFreemiusDevPaths -StageDir $stageDir
-Test-PhoenixFreemiusVendorLayout -StageDir $stageDir
+if ($Channel -eq 'Freemius') {
+	Remove-PhoenixFreemiusDevPaths -StageDir $stageDir
+	Test-PhoenixFreemiusVendorLayout -StageDir $stageDir
+}
 New-PhoenixPluginReleaseZip -StageDir $stageDir -PluginSlug $pluginSlug -ZipPath $zipPath
 Test-PhoenixPluginReleaseZip -ZipPath $zipPath -PluginSlug $pluginSlug -RequireDistinctUris:($Channel -eq 'WpOrg')
 
-Test-PhoenixFreemiusConnectBootstrap `
-	-ZipPath $zipPath `
-	-PluginSlug $pluginSlug `
-	-FreemiusBootstrapFile 'includes/freemius-gift.php'
+if ($Channel -eq 'Freemius') {
+	Test-PhoenixFreemiusConnectBootstrap `
+		-ZipPath $zipPath `
+		-PluginSlug $pluginSlug `
+		-FreemiusBootstrapFile 'includes/freemius-gift.php'
+}
 
 if ($Channel -eq 'WpOrg') {
 	Test-PhoenixWpOrgZipNoPremiumPaths `

@@ -1,5 +1,12 @@
 # Private Pro source (Gift)
 
+## Terminology (mandatory)
+
+- **Pro** = customer-facing plan/features.
+- **premium/** or `phoenix-wp-gift-premium` = private source repository/submodule location.
+
+Use **Pro** for feature/tier wording and **premium** for repository/path wording.
+
 **Never commit `premium/` to public GitHub.** This folder is listed in `.gitignore` until migration to a private premium repo (see below).
 
 > **Geplant:** [`phoenix-wp-gift-premium`](../../phoenix-wp-core/docs/PREMIUM-REPOS.md) — privates Repo + Submodule `premium/`.  

@@ -9,30 +9,68 @@ Requires PHP: 8.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 WC requires at least: 8.0
-WC tested up to: 10.8.1
+WC tested up to: 10.9.1
 
-Automatically add a free gift to the WooCommerce cart when a subtotal or item-quantity threshold is met. By PhoenixWP.
+Automatically add a free gift to the WooCommerce cart when a minimum gross cart subtotal or minimum item quantity is met.
 
 == Description ==
 
-PhoenixWP Gift adds one free gift line to the cart when your rule is met. The gift price is zero, quantity is locked to 1, and the gift line is sorted to the end of the cart.
+Boost your store's average order value with automated checkout incentives. Phoenix Gift for WooCommerce detects when your cart criteria are met and adds a free gift product to the cart. If the cart falls below your threshold, the gift is removed automatically.
 
-**Free version**
+The free version allows one active rule based on either a minimum gross subtotal or a minimum item quantity. The gift price is locked to zero, quantity is fixed to 1, and the line is sorted to the end of the cart.
 
-* One rule (minimum gross subtotal **or** minimum item quantity)
-* One simple gift product
+On first activation, you can connect your site via Freemius to manage your plan or enter a license key (optional — the free tier works without a license).
+
+= Free features =
+
+* **One active rule** — minimum gross cart subtotal (including tax) **or** minimum item quantity (one trigger type per rule, not both)
+* **One simple gift product** per rule
+* **HPOS and Cart/Checkout Blocks** compatible
+* Optional **gift label** badge in the mini cart and classic (shortcode) checkout
+* CSS class `phoenix-gift-for-woocommerce-cart-item` for styling on cart page and block checkout
+
+**Typical use cases**
+
+* Increase average order value with automatic threshold gifts
+* Reward shoppers without manual coupon handling
+* Run a simple always-on gift campaign in the free version
+* Keep cart logic clean — gift is added when eligible and removed when not
+
+**Compatibility**
+
+* WordPress 6.7+ and WooCommerce 8.0+
+* Tested with WooCommerce 10.9.1
 * HPOS and Cart/Checkout Blocks compatible
-* Optional badge label in mini cart and classic checkout
-* CSS class `phoenix-gift-for-woocommerce-cart-item` for theme styling on cart and block checkout
+* Standalone plugin — WooCommerce only, no other PhoenixWP plugins required
 
-**Gift Pro** (annual license at [phoenixwp.com](https://phoenixwp.com/preise/)): multiple rules, customer gift choice, live progress hint, import/export, and statistics. Activate your license under **PhoenixWP Gift → License**.
+= Gift Pro =
+
+Gift Pro (annual license at 19 € / 19 $ per year via https://phoenixwp.com/preise/): multiple rules, customer gift choice, live progress hint, import/export, and statistics. Activate your license under **PhoenixWP Gift → License**.
+
+**Advanced features in Gift Pro**
+
+* Unlimited active rules with priority ordering
+* Multiple gift products per rule, including variable products
+* Customer gift choice (pick 1 of N)
+* Advanced conditions: categories, tags, roles, coupons, and campaign dates
+* Live progress hint and shortcode messaging before threshold is reached
+* Rule import/export and trigger statistics
+
+More on https://phoenixwp.com/phoenix-wp-gift/
+
+= For licensed Pro installations =
+
+If your Gift Pro license is already active, the plugin runs as a full production workflow without additional upsell steps. Use Pro for multi-rule campaigns, advanced targeting, and operational tooling (import/export, statistics).
+
+Premium-ready roadmap: Business Suite integration is planned for a later stage (currently targeted for late 2026). This roadmap is not a live feature yet.
 
 == Installation ==
 
-1. Upload the plugin folder to `/wp-content/plugins/phoenix-gift-for-woocommerce/` or install from the WordPress plugin directory.
+1. Upload the plugin folder from your PhoenixWP download ZIP to `/wp-content/plugins/phoenix-gift-for-woocommerce/`, or install from the WordPress plugin directory.
 2. Activate the plugin through the **Plugins** menu.
 3. Ensure **WooCommerce** is active.
-4. Go to **PhoenixWP Gift**, enable the rule, choose a gift product, and set your threshold.
+4. Complete the optional Freemius connect step, or skip it to use the free tier immediately.
+5. Go to **PhoenixWP Gift**, enable the rule, choose a gift product, and set your threshold.
 
 == Frequently Asked Questions ==
 
@@ -62,7 +100,21 @@ Example for Cart and Checkout blocks:
 
 Replace `Free gift` with your shop wording. This text is fixed in CSS and does not sync with the admin **Gift label** field.
 
-Documentation and support: https://phoenixwp.com/support/ — shorter reference in `docs/FAQ.md` inside the plugin.
+= Is this plugin compatible with Cart and Checkout Blocks? =
+
+Yes. The plugin is compatible with the classic shortcode checkout and the WooCommerce Cart/Checkout Blocks, and declares HPOS compatibility.
+
+= Can I use net cart subtotals in the free version? =
+
+No. The free tier uses the **gross** cart subtotal (including line tax) only.
+
+= Does this plugin require other dependencies? =
+
+WooCommerce is required. The plugin runs standalone with its own admin menu — no other PhoenixWP plugins are needed.
+
+= Does this plugin support gift cards or vouchers? =
+
+No. This is an automated checkout gift based on cart rules — not downloadable vouchers, coupon generators, or balance-based gift cards.
 
 = Why is the gift not added to the cart? =
 
@@ -70,7 +122,19 @@ Check that the rule is enabled, the gift product is purchasable, and the thresho
 
 = Does this work with WPML or WooCommerce Multilingual? =
 
-The free gift is added by **product ID**. With WPML (or WooCommerce Multilingual), translate the **gift product into every active shop language** and keep each translation **published** and **purchasable**. If the gift exists only in the default language, customers who switch language on the storefront will usually **not** see the gift in the cart. Select the gift in Gift settings using the product from your default language; WPML links the translations automatically when they exist.
+The free gift is added by **product ID**. Translate the **gift product into every active shop language** and keep each translation **published** and **purchasable**. If the gift exists only in the default language, customers who switch language on the storefront will usually **not** see the gift in the cart.
+
+= How do I upgrade to Gift Pro? =
+
+Purchase at https://phoenixwp.com/preise/. You receive a license key by email from Freemius. Enter it under **PhoenixWP Gift → License** — usually no reinstall required.
+
+= What changes when my Gift Pro license is active? =
+
+The same plugin installation stays in place. Pro capabilities are enabled in your existing workflow, including unlimited rules, advanced conditions, and customer gift choice.
+
+= Where can I get support? =
+
+https://phoenixwp.com/support/
 
 == Screenshots ==
 
@@ -84,6 +148,8 @@ The free gift is added by **product ID**. With WPML (or WooCommerce Multilingual
 
 = 1.0.3 =
 * Freemius upgrade pricing: show annual price prominently instead of monthly equivalent.
+* Confirmed compatibility with WooCommerce 10.9.1.
+* Readme: long-form details, use cases, compatibility, and expanded Gift Pro section.
 
 = 1.0.2 =
 * Removed the persistent standalone admin notice on Gift settings screens.
@@ -99,7 +165,7 @@ The free gift is added by **product ID**. With WPML (or WooCommerce Multilingual
 * Gift badge in mini cart and classic checkout; CSS hook for cart and blocks.
 * Internal gift order meta hidden from customer emails and PDF documents (invoices, packing slips).
 * Freemius licensing for Gift Pro (multiple rules, customer choice, progress, tools).
-* Standalone admin menu, License submenu, and manual license key entry (no Core required).
+* Standalone admin menu, License submenu, and manual license key entry.
 
 == Upgrade Notice ==
 
