@@ -26,7 +26,7 @@ Two parallel version lines in **one repo** (`main` = dev/staging).
 | Channel | Version | Dashboard / SVN |
 |---------|---------|-----------------|
 | wp.org | **1.0.3** | SVN `tags/1.0.3` ✅ |
-| Freemius | **1.0.3** | ⏳ Upload `dist/…-1.0.3.zip` if dashboard still on older release |
+| Freemius | **1.0.3** | ✅ Deployed (SDK **2.13.4**; ältere Versionen unreleased) |
 
 See `docs/FREEMIUS-RELEASE-1.0.3.md`.
 

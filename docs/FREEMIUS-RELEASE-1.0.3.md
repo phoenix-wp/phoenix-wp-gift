@@ -7,7 +7,7 @@
 ## Build ZIP
 
 ```powershell
-cd C:\Users\mail\OneDrive\Desktop\Phoenix-WP\phoenix-wp-gift
+cd C:\Users\mail\Desktop\Phoenix-WP\phoenix-wp-gift
 .\scripts\build-release.ps1 -Channel Freemius
 # → dist/phoenix-gift-for-woocommerce-1.0.3.zip
 ```
@@ -21,7 +21,7 @@ cd C:\Users\mail\OneDrive\Desktop\Phoenix-WP\phoenix-wp-gift
 1. Product **31421** — PhoenixWP Gift
 2. **Deployment** → **+ Add New Version** → ZIP: `dist/phoenix-gift-for-woocommerce-1.0.3.zip`
 3. Release notes (EN) — siehe unten
-4. Status: **Released**
+4. Status: **Released** (✅ 2026-07-10 — Re-Deploy mit SDK **2.13.4**; ältere Deployment-Versionen unreleased)
 
 **Hinweis:** Wenn Dashboard noch **1.0.1** zeigt, ersetzen oder neue Version hinzufügen (nicht wp.org-Review blockieren).
 
@@ -32,6 +32,9 @@ cd C:\Users\mail\OneDrive\Desktop\Phoenix-WP\phoenix-wp-gift
 - Freemius upgrade pricing: annual price shown prominently (`show_annual_in_monthly` filter).
 - Aligns with wordpress.org **1.0.3** (same codebase; dual-build WpOrg/Freemius).
 - Build guards: no dev artifacts in wp.org ZIP, UTF-8 BOM fix in main plugin file.
+- Freemius WordPress SDK updated to **2.13.4**.
+
+**Re-deploy (0 downloads):** Gleiche Versionsnummer **1.0.3** im Dashboard ersetzen — ZIP neu aus `dist/` hochladen (SDK 2.13.4).
 
 ---
 
